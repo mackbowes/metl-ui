@@ -1,5 +1,4 @@
-import { Box } from "@chakra-ui/react";
-import ConnectWalletButton from "../components/ConnectWalletButton";
+import { Box, Heading } from "@chakra-ui/react";
 
 export default function Home() {
   return (
@@ -24,13 +23,9 @@ export default function Home() {
             alt="Metl Logo"
             style={{ margin: `1rem auto`, userSelect: `none` }}
           />
-          <ConnectWalletButton
-            clickFunction={() => {
-              return null;
-            }}
-          >
-            Connect Wallet
-          </ConnectWalletButton>
+          <Heading as="h3" fontSize="1.5rem">
+            You have not yet been assigned a role.
+          </Heading>
         </Box>
       </Box>
     </>
