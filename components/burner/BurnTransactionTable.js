@@ -6,6 +6,7 @@ import {
   Heading,
   Text,
 } from "@chakra-ui/react";
+import DataTableButton from "../DataTableButton";
 
 export default function BurnTransactionTable(props) {
   const data = props.data;
@@ -14,10 +15,10 @@ export default function BurnTransactionTable(props) {
       if (typeof data[i] === "undefined") {
         data[i] = {
           id: "⠀", // special unicode character do not delet
-          from: "",
-          amount: "",
-          burned: "",
-          time: "",
+          from: "⠀",
+          amount: "⠀",
+          burned: "⠀",
+          time: "⠀",
         };
       }
     }
@@ -77,37 +78,47 @@ export default function BurnTransactionTable(props) {
             {data.map((entry, index) => {
               const bgColor = (index + 1) % 2 == 0 ? "transparent" : "#C4C4C4";
               return (
-                <Box
+                <HStack
                   bg={bgColor}
                   w="100%"
                   sx={{ margin: `0` }}
                   key={`${entry}--${index}`}
+                  divider={<StackDivider borderColor="rgba(0,0,0,0.25)" />}
                 >
                   <Box w="129px" p="4px">
                     <Text>{entry.id}</Text>
                   </Box>
-                  <Box w="129px">
+                  <Box w="129px" p="4px">
                     <Text>{entry.from}</Text>
                   </Box>
-                  <Box w="126px">
+                  <Box w="126px" p="4px">
                     <Text>{entry.amount}</Text>
                   </Box>
-                  <Box w="107px">
+                  <Box w="107px" p="4px">
                     <Text>{entry.burned}</Text>
                   </Box>
-                  <Box w="73px">
+                  <Box w="73px" p="4px">
                     <Text>
-                      {entry.burned !== ""
-                        ? entry.burned === true
-                          ? "burn btn"
-                          : "disabled burn btn"
-                        : ""}
+                      {entry.burned !== "" &&
+                      typeof entry.burned === "boolean" ? (
+                        entry.burned === true ? (
+                          <DataTableButton isDisabled={false}>
+                            Burn
+                          </DataTableButton>
+                        ) : (
+                          <DataTableButton isDisabled={true}>
+                            Burn
+                          </DataTableButton>
+                        )
+                      ) : (
+                        ""
+                      )}
                     </Text>
                   </Box>
-                  <Box>
+                  <Box p="4px">
                     <Text>{entry.time}</Text>
                   </Box>
-                </Box>
+                </HStack>
               );
             })}
           </Box>

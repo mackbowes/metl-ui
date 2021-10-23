@@ -7,8 +7,10 @@ import {
   Text,
 } from "@chakra-ui/react";
 
+import DataTableButton from "../DataTableButton";
+
 export default function MintTransactionTable(props) {
-  const data = props.data;
+  let data = props.data;
   if (data.length < 40) {
     for (let i = 0; i < 40; i++) {
       if (typeof data[i] === "undefined") {
@@ -98,13 +100,20 @@ export default function MintTransactionTable(props) {
                   </Box>
                   <Box w="73px" p="4px">
                     <Text>
-                      {console.log(typeof entry.minted)}
-                      {entry.minted !== ""
-                        ? typeof entry.minted === "bool" &&
-                          entry.minted === true
-                          ? "mint btn"
-                          : "dm btn"
-                        : ""}
+                      {entry.minted !== "" &&
+                      typeof entry.minted === "boolean" ? (
+                        entry.minted === true ? (
+                          <DataTableButton isDisabled={false}>
+                            Mint
+                          </DataTableButton>
+                        ) : (
+                          <DataTableButton isDisabled={true}>
+                            mint
+                          </DataTableButton>
+                        )
+                      ) : (
+                        ""
+                      )}
                     </Text>
                   </Box>
                   <Box p="4px">
