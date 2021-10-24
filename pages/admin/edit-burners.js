@@ -6,7 +6,7 @@ import TabRowGroup from '../../components/TabRowGroup'
 import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
 import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
-import EditMinterControlForm from "../../components/admin/EditMinterControlForm";
+import EditBurnerControlForm from "../../components/admin/EditBurnerControlForm";
 
 
 export default function Home() {
@@ -14,15 +14,15 @@ export default function Home() {
   return (
     <>
       <Page>
-        <TopBar label={"admin"} />
+        <TopBar label={"freezer"} />
         <Box sx={{ height: `100%`, display: `grid`, placeItems: `center` }}>
           <Box>
             <TabRow>
               <TabRowGroup>
-              <Tab isActive={true} clickFunction={() => null}>
+              <Tab isActive={false} clickFunction={() => null}>
                 Edit Minters
               </Tab>
-              <Tab isActive={false} clickFunction={() => null}>
+              <Tab isActive={true} clickFunction={() => null}>
                 Edit Burners
               </Tab>
               <Tab isActive={false} clickFunction={() => null}>
@@ -43,7 +43,7 @@ export default function Home() {
             </TabRow>
             <ControlPanel>
               <MultiActionControlLayout>
-                <EditMinterControlForm />
+                <EditBurnerControlForm />
               </MultiActionControlLayout>
             </ControlPanel>
           </Box>
