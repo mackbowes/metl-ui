@@ -9,15 +9,14 @@ export default function SingleActionButton(props) {
         color: `white`,
         textTransform: `uppercase`,
         display: `inline-block`,
-        height: `24px`,
-        fontSize: `16px`,
+        fontSize: `14px`,
         fontWeight: `700`,
         boxShadow: `0px 4px 0px rgba(0, 0, 0, 0.5)`,
         transition: `all 0.25s`,
         userSelect: `none`,
         borderRadius: `4px`,
         margin: `.5rem 0`,
-        padding: `.5ex 11px`;
+        padding: `.3ex 11px`,
       }}
       _hover={{
         cursor: `pointer`,

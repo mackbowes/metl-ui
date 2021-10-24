@@ -1,4 +1,4 @@
-import {useState} from 'react';
+
 import { Input } from "@chakra-ui/react"
 
 export default function MultiActionAddressInput(props) {
@@ -8,17 +8,18 @@ export default function MultiActionAddressInput(props) {
 
     const handleChange = (d) => {
         // d for data
-        setVal((v) => {
-        // v for previous Value
-        if (addressRegex(d)) {
-         return d;   
+        let previousValue = val;
+        console.log(val);
+        console.log(d.target.value);
+        if (addressRegex.test(d.target.value)) {
+            previousValue = d.target.value;
         }
-        return v;
+
+        setVal(previousValue);
         // returns new data if it passes regex check, otherwise returns previous value;
-        });
     }
 
 return (
-    <Input placeholder="address" value={val} onChange={(d) => handleChange(d)} />
+    <Input sx={{minWidth: `44ch`, width: `auto`}} placeholder="address" value={val} onChange={(d) => handleChange(d)} />
 )
 }

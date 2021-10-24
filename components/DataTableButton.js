@@ -22,7 +22,7 @@ export default function DataTableButton(props) {
         textTransform: `uppercase`,
         display: `grid`,
         placeItems: `center`,
-        width: `60px`,
+        padding: `0 4px`,
         height: `18px`,
         fontSize: `14px`,
         lineHeight: `0`,

@@ -5,13 +5,15 @@ import Tab from "../../components/Tab";
 import TabRow from "../../components/TabRow";
 import ControlPanel from "../../components/ControlPanel";
 import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
+import FreezerControlForm from "../../components/freezer/FreezerControlForm";
+
 
 export default function Home() {
 
   return (
     <>
       <Page>
-        <TopBar label={"pauser"} />
+        <TopBar label={"freezer"} />
         <Box sx={{ height: `100%`, display: `grid`, placeItems: `center` }}>
           <Box>
             <TabRow>
@@ -21,7 +23,7 @@ export default function Home() {
             </TabRow>
             <ControlPanel>
               <MultiActionControlLayout>
-                
+                <FreezerControlForm />
               </MultiActionControlLayout>
             </ControlPanel>
           </Box>
