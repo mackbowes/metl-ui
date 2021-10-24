@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import DataTableButton from "../DataTableButton";
 
-export default function BurnerTable(props) {
+export default function FreezerTable(props) {
   let data = props.data;
   if (data.length < 10) {
     for (let i = 0; i < 10; i++) {
@@ -14,7 +14,7 @@ export default function BurnerTable(props) {
         data[i] = {
           address: "⠀", // special unicode character do not delet
           name: "⠀",
-          isBurner: "⠀",
+          isFreezer: "⠀",
         };
       }
     }
@@ -31,7 +31,7 @@ export default function BurnerTable(props) {
         return {
             address: `${first8}...${last4}`,
             name: item.name,
-            isBurner: item.isBurner,
+            isFreezer: item.isFreezer,
         }
         } else {
             return item
@@ -56,7 +56,7 @@ export default function BurnerTable(props) {
             <Text>Name</Text>
           </Box>
           <Box>
-            <Text>Edit Burner Status</Text>
+            <Text>Edit Freezer Status</Text>
           </Box>
         </HStack>
         <Box
@@ -91,16 +91,16 @@ export default function BurnerTable(props) {
                   divider={<StackDivider borderColor="rgba(0,0,0,0.25)" />}
                 >
                   <Box w="140px" p="4px">
-                    <Text>{entry.isBurner === true && entry.address}</Text>
+                    <Text>{entry.isFreezer === true && entry.address}</Text>
                   </Box>
                   <Box w="145px" p="4px">
-                    <Text>{entry.isBurner === true && entry.name}</Text>
+                    <Text>{entry.isFreezer === true && entry.name}</Text>
                   </Box>
                   <Box w="145px" p="4px">
                     <Text>
-                      {entry.isBurner !== "" &&
-                      typeof entry.isBurner === "boolean" ? (
-                        entry.isBurner === true ? (
+                      {entry.isFreezer !== "" &&
+                      typeof entry.isFreezer === "boolean" ? (
+                        entry.isFreezer === true ? (
                           <DataTableButton isDisabled={false}>
                             remove
                           </DataTableButton>

@@ -1,22 +1,20 @@
-import {useRouter} from 'next/router';
+import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 import TopBar from "../../components/TopBar";
 import Page from "../../components/Page";
 import TabRow from "../../components/TabRow";
-import TabRowGroup from '../../components/TabRowGroup'
+import TabRowGroup from "../../components/TabRowGroup";
 import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
 import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
-import EditBurnerControlForm from "../../components/admin/EditBurnerControlForm";
-
+import EditFreezerControlForm from "../../components/admin/EditFreezerControlForm";
 
 export default function Home() {
-
   const router = useRouter();
 
   const updateRoute = (route) => {
     router.push(route);
-  }
+  };
 
   return (
     <>
@@ -33,12 +31,12 @@ export default function Home() {
                   Edit Minters
                 </Tab>
                 <Tab
-                  isActive={true}
-                  clickFunction={() => null}
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/edit-burners")}
                 >
                   Edit Burners
                 </Tab>
-                <Tab isActive={false} clickFunction={() => updateRoute("/admin/edit-freezers")}>
+                <Tab isActive={true} clickFunction={() => null}>
                   Edit Freezers
                 </Tab>
                 <Tab
@@ -65,7 +63,7 @@ export default function Home() {
             </TabRow>
             <ControlPanel>
               <MultiActionControlLayout>
-                <EditBurnerControlForm />
+                <EditFreezerControlForm />
               </MultiActionControlLayout>
             </ControlPanel>
           </Box>

@@ -1,22 +1,20 @@
-import {useRouter} from 'next/router';
+import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 import TopBar from "../../components/TopBar";
 import Page from "../../components/Page";
 import TabRow from "../../components/TabRow";
-import TabRowGroup from '../../components/TabRowGroup'
+import TabRowGroup from "../../components/TabRowGroup";
 import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
 import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
-import EditBurnerControlForm from "../../components/admin/EditBurnerControlForm";
-
+import EditPauserControlForm from "../../components/admin/EditPauserControlForm";
 
 export default function Home() {
-
   const router = useRouter();
 
   const updateRoute = (route) => {
     router.push(route);
-  }
+  };
 
   return (
     <>
@@ -33,17 +31,20 @@ export default function Home() {
                   Edit Minters
                 </Tab>
                 <Tab
-                  isActive={true}
-                  clickFunction={() => null}
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/edit-burners")}
                 >
                   Edit Burners
                 </Tab>
-                <Tab isActive={false} clickFunction={() => updateRoute("/admin/edit-freezers")}>
+                <Tab
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/edit-freezers")}
+                >
                   Edit Freezers
                 </Tab>
                 <Tab
-                  isActive={false}
-                  clickFunction={() => updateRoute("/admin/edit-pausers")}
+                  isActive={true}
+                  clickFunction={() => null}
                 >
                   Edit Pausers
                 </Tab>
@@ -65,7 +66,7 @@ export default function Home() {
             </TabRow>
             <ControlPanel>
               <MultiActionControlLayout>
-                <EditBurnerControlForm />
+                <EditPauserControlForm />
               </MultiActionControlLayout>
             </ControlPanel>
           </Box>

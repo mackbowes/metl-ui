@@ -3,24 +3,24 @@ import {Box, HStack, VStack, Heading} from '@chakra-ui/react'
 import MultiActionAddressInput from '../MultiActionControl/MultiActionAddressInput'
 import MultiActionTextInput from '../MultiActionControl/MultiActionTextInput'
 import MultiActionButton from '../MultiActionControl/MultiActionButton'
-import BurnerTable from './BurnerTable'
+import PauserTable from './PauserTable'
 
-export default function EditBurnerControlForm(props) {
+export default function EditPauserControlForm(props) {
 
-    const [addBurnerAddress, setAddBurnerAddress] = useState('');
-    const [addBurnerName, setAddBurnerName] = useState('');
-    const [removeBurnerAddress, setRemoveBurnerAddress] = useState('');
+    const [addPauserAddress, setAddPauserAddress] = useState('');
+    const [addPauserName, setAddPauserName] = useState('');
+    const [removePauserAddress, setRemovePauserAddress] = useState('');
 
   const data = [
     {
     address: '0xBc4A2b0B65e39bAE9bedad1798B824EAf0A60639',
     name: 'Mackenzie Patrick Bowes',
-    isBurner: true,
+    isPauser: true,
     },
     {
     address: '0xBc4A2b0B65e39bAE9bedad1798B824EAf0A60639',
     name: 'Vitalik Buterin',
-    isBurner: false,
+    isPauser: false,
     }
   ]
 
@@ -33,11 +33,11 @@ return (
             fontSize: `1.5rem`,
             paddingBottom: `.5ex`,
             marginBottom: `.5ex`
-        }}>Add Burner</Heading>
+        }}>Add Pauser</Heading>
         <Box sx={{display: `flex`, justifyContent: `flex-start`}}>
-          <MultiActionAddressInput val={addBurnerAddress} setVal={setAddBurnerAddress}/>
+          <MultiActionAddressInput val={addPauserAddress} setVal={setAddPauserAddress}/>
           <Box sx={{width: `1rem`}}></Box>
-          <MultiActionTextInput val={addBurnerName} setVal={setAddBurnerName} />
+          <MultiActionTextInput val={addPauserName} setVal={setAddPauserName} />
           <Box sx={{width: `1rem`}}></Box>
           <MultiActionButton label={'Add'}/>
         </Box>
@@ -47,9 +47,9 @@ return (
             padding: `.5ex 0`,
             margin: `.5ex 0`,
             fontSize: `1.5rem`
-        }}>Remove Burner</Heading>
+        }}>Remove Pauser</Heading>
         <Box sx={{display: `flex`, justifyContent: `flex-start`}}>
-          <MultiActionAddressInput val={removeBurnerAddress} setVal={setRemoveBurnerAddress}/>
+          <MultiActionAddressInput val={removePauserAddress} setVal={setRemovePauserAddress}/>
           <Box sx={{width: `1rem`}}></Box>
           <MultiActionButton label={'remove'}/>
         </Box>
@@ -59,9 +59,9 @@ return (
             padding: `.5ex 0`,
             margin: `.5ex 0`,
             fontSize: `1.5rem`
-        }}>Current Burners</Heading>
+        }}>Current Pausers</Heading>
         
-        <BurnerTable data={data}/>
+        <PauserTable data={data}/>
        
 
     </Box>

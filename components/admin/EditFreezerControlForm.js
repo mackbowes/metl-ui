@@ -3,24 +3,24 @@ import {Box, HStack, VStack, Heading} from '@chakra-ui/react'
 import MultiActionAddressInput from '../MultiActionControl/MultiActionAddressInput'
 import MultiActionTextInput from '../MultiActionControl/MultiActionTextInput'
 import MultiActionButton from '../MultiActionControl/MultiActionButton'
-import BurnerTable from './BurnerTable'
+import FreezerTable from './FreezerTable'
 
-export default function EditBurnerControlForm(props) {
+export default function EditFreezerControlForm(props) {
 
-    const [addBurnerAddress, setAddBurnerAddress] = useState('');
-    const [addBurnerName, setAddBurnerName] = useState('');
-    const [removeBurnerAddress, setRemoveBurnerAddress] = useState('');
+    const [addFreezerAddress, setAddFreezerAddress] = useState('');
+    const [addFreezerName, setAddFreezerName] = useState('');
+    const [removeFreezerAddress, setRemoveFreezerAddress] = useState('');
 
   const data = [
     {
     address: '0xBc4A2b0B65e39bAE9bedad1798B824EAf0A60639',
     name: 'Mackenzie Patrick Bowes',
-    isBurner: true,
+    isFreezer: true,
     },
     {
     address: '0xBc4A2b0B65e39bAE9bedad1798B824EAf0A60639',
     name: 'Vitalik Buterin',
-    isBurner: false,
+    isFreezer: false,
     }
   ]
 
@@ -33,11 +33,11 @@ return (
             fontSize: `1.5rem`,
             paddingBottom: `.5ex`,
             marginBottom: `.5ex`
-        }}>Add Burner</Heading>
+        }}>Add Freezer</Heading>
         <Box sx={{display: `flex`, justifyContent: `flex-start`}}>
-          <MultiActionAddressInput val={addBurnerAddress} setVal={setAddBurnerAddress}/>
+          <MultiActionAddressInput val={addFreezerAddress} setVal={setAddFreezerAddress}/>
           <Box sx={{width: `1rem`}}></Box>
-          <MultiActionTextInput val={addBurnerName} setVal={setAddBurnerName} />
+          <MultiActionTextInput val={addFreezerName} setVal={setAddFreezerName} />
           <Box sx={{width: `1rem`}}></Box>
           <MultiActionButton label={'Add'}/>
         </Box>
@@ -47,9 +47,9 @@ return (
             padding: `.5ex 0`,
             margin: `.5ex 0`,
             fontSize: `1.5rem`
-        }}>Remove Burner</Heading>
+        }}>Remove Freezer</Heading>
         <Box sx={{display: `flex`, justifyContent: `flex-start`}}>
-          <MultiActionAddressInput val={removeBurnerAddress} setVal={setRemoveBurnerAddress}/>
+          <MultiActionAddressInput val={removeFreezerAddress} setVal={setRemoveFreezerAddress}/>
           <Box sx={{width: `1rem`}}></Box>
           <MultiActionButton label={'remove'}/>
         </Box>
@@ -59,9 +59,9 @@ return (
             padding: `.5ex 0`,
             margin: `.5ex 0`,
             fontSize: `1.5rem`
-        }}>Current Burners</Heading>
+        }}>Current Freezers</Heading>
         
-        <BurnerTable data={data}/>
+        <FreezerTable data={data}/>
        
 
     </Box>

@@ -1,3 +1,4 @@
+import {useRouter} from 'next/router';
 import { Box } from "@chakra-ui/react";
 import TopBar from "../../components/TopBar";
 import Page from "../../components/Page";
@@ -11,6 +12,12 @@ import EditMinterControlForm from "../../components/admin/EditMinterControlForm"
 
 export default function Home() {
 
+  const router = useRouter();
+
+  const updateRoute = (route) => {
+    router.push(route);
+  }
+
   return (
     <>
       <Page>
@@ -22,21 +29,21 @@ export default function Home() {
               <Tab isActive={true} clickFunction={() => null}>
                 Edit Minters
               </Tab>
-              <Tab isActive={false} clickFunction={() => null}>
+              <Tab isActive={false} clickFunction={() => updateRoute('/admin/edit-burners')}>
                 Edit Burners
               </Tab>
-              <Tab isActive={false} clickFunction={() => null}>
+              <Tab isActive={false} clickFunction={() => updateRoute('/admin/edit-freezers')}>
                 Edit Freezers
               </Tab>
-              <Tab isActive={false} clickFunction={() => null}>
+              <Tab isActive={false} clickFunction={() => updateRoute('/admin/edit-pausers')}>
                 Edit Pausers
               </Tab>
               </TabRowGroup>
               <TabRowGroup>
-              <Tab isActive={false} clickFunction={() => null}>
+              <Tab isActive={false} clickFunction={() => updateRoute('/admin')}>
                 Review Transactions
               </Tab>
-              <Tab isActive={false} clickFunction={() => null}>
+              <Tab isActive={false} clickFunction={() => updateRoute('/admin/send-tokens')}>
                 Send Tokens
               </Tab>
               </TabRowGroup>
