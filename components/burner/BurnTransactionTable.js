@@ -1,9 +1,7 @@
 import {
   Box,
   HStack,
-  VStack,
   StackDivider,
-  Heading,
   Text,
 } from "@chakra-ui/react";
 import DataTableButton from "../DataTableButton";

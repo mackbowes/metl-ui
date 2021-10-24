@@ -4,8 +4,7 @@ import Page from "../../components/Page";
 import Tab from "../../components/Tab";
 import TabRow from "../../components/TabRow";
 import ControlPanel from "../../components/ControlPanel";
-import SingleActionControlLayout from "../../components/SingleActionControl/SingleActionControlLayout";
-import PauseTokenForm from "../../components/pauser/PauseTokenForm";
+import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
 
 export default function Home() {
 
@@ -17,13 +16,13 @@ export default function Home() {
           <Box>
             <TabRow>
               <Tab isActive={true} clickFunction={() => null}>
-                Pause Transactions
+                Freeze Transactions
               </Tab>
             </TabRow>
             <ControlPanel>
-              <SingleActionControlLayout>
-                <PauseTokenForm />
-              </SingleActionControlLayout>
+              <MultiActionControlLayout>
+                
+              </MultiActionControlLayout>
             </ControlPanel>
           </Box>
         </Box>
