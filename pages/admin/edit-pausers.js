@@ -8,13 +8,26 @@ import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
 import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
 import EditPauserControlForm from "../../components/admin/EditPauserControlForm";
+import { useEffect } from "react";
+import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
+  const { address, injectedChain, injectedProvider, requestWallet } =
+    useInjectedProvider();
   const router = useRouter();
 
   const updateRoute = (route) => {
     router.push(route);
   };
+
+  useEffect(() => {
+    async function handleData() {
+      if (!injectedProvider) {
+        await requestWallet();
+      }
+    }
+    handleData();
+  }, [address, injectedProvider]);
 
   return (
     <>
@@ -42,10 +55,7 @@ export default function Home() {
                 >
                   Edit Freezers
                 </Tab>
-                <Tab
-                  isActive={true}
-                  clickFunction={() => null}
-                >
+                <Tab isActive={true} clickFunction={() => null}>
                   Edit Pausers
                 </Tab>
               </TabRowGroup>
@@ -59,6 +69,12 @@ export default function Home() {
                 <Tab
                   isActive={false}
                   clickFunction={() => updateRoute("/admin/send-tokens")}
+                >
+                  Send Tokens
+                </Tab>
+                <Tab
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/update-pool")}
                 >
                   Send Tokens
                 </Tab>

@@ -1,22 +1,33 @@
-import {useRouter} from 'next/router';
+import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 import TopBar from "../../components/TopBar";
 import Page from "../../components/Page";
+import { Loader } from "../../components/Loader";
 import TabRow from "../../components/TabRow";
-import TabRowGroup from '../../components/TabRowGroup'
+import TabRowGroup from "../../components/TabRowGroup";
 import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
 import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
 import EditBurnerControlForm from "../../components/admin/EditBurnerControlForm";
-
+import { useEffect } from "react";
+import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
-
+  const { address, injectedChain, injectedProvider } = useInjectedProvider();
   const router = useRouter();
 
   const updateRoute = (route) => {
     router.push(route);
-  }
+  };
+
+  useEffect(() => {
+    async function handleData() {
+      if (!injectedProvider) {
+        await requestWallet();
+      }
+    }
+    handleData();
+  }, [address, injectedProvider]);
 
   return (
     <>
@@ -32,13 +43,13 @@ export default function Home() {
                 >
                   Edit Minters
                 </Tab>
-                <Tab
-                  isActive={true}
-                  clickFunction={() => null}
-                >
+                <Tab isActive={true} clickFunction={() => null}>
                   Edit Burners
                 </Tab>
-                <Tab isActive={false} clickFunction={() => updateRoute("/admin/edit-freezers")}>
+                <Tab
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/edit-freezers")}
+                >
                   Edit Freezers
                 </Tab>
                 <Tab
@@ -58,6 +69,12 @@ export default function Home() {
                 <Tab
                   isActive={false}
                   clickFunction={() => updateRoute("/admin/send-tokens")}
+                >
+                  Send Tokens
+                </Tab>
+                <Tab
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/update-pool")}
                 >
                   Send Tokens
                 </Tab>

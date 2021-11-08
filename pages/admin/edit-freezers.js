@@ -8,13 +8,25 @@ import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
 import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
 import EditFreezerControlForm from "../../components/admin/EditFreezerControlForm";
+import { useEffect } from "react";
+import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
+  const { address, injectedProvider } = useInjectedProvider();
   const router = useRouter();
 
   const updateRoute = (route) => {
     router.push(route);
   };
+
+  useEffect(() => {
+    async function handleData() {
+      if (!injectedProvider) {
+        await requestWallet();
+      }
+    }
+    handleData();
+  }, [address, injectedProvider]);
 
   return (
     <>
@@ -56,6 +68,12 @@ export default function Home() {
                 <Tab
                   isActive={false}
                   clickFunction={() => updateRoute("/admin/send-tokens")}
+                >
+                  Send Tokens
+                </Tab>
+                <Tab
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/update-pool")}
                 >
                   Send Tokens
                 </Tab>

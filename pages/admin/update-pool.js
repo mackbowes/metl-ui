@@ -1,19 +1,21 @@
-import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 import TopBar from "../../components/TopBar";
 import Page from "../../components/Page";
+import { Loader } from "../../components/Loader";
+import Tab from "../../components/Tab";
 import TabRow from "../../components/TabRow";
 import TabRowGroup from "../../components/TabRowGroup";
-import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
-import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
-import EditMinterControlForm from "../../components/admin/EditMinterControlForm";
-import { useEffect } from "react";
+import SingleActionControlLayout from "../../components/SingleActionControl/SingleActionControlLayout";
+import UpdatePoolForm from "../../components/admin/UpdatePoolForm";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
   const { address, injectedChain, injectedProvider } = useInjectedProvider();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
 
   const updateRoute = (route) => {
     router.push(route);
@@ -36,7 +38,10 @@ export default function Home() {
           <Box>
             <TabRow>
               <TabRowGroup>
-                <Tab isActive={true} clickFunction={() => null}>
+                <Tab
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/edit-minters")}
+                >
                   Edit Minters
                 </Tab>
                 <Tab
@@ -71,18 +76,15 @@ export default function Home() {
                 >
                   Send Tokens
                 </Tab>
-                <Tab
-                  isActive={false}
-                  clickFunction={() => updateRoute("/admin/update-pool")}
-                >
+                <Tab isActive={true} clickFunction={() => null}>
                   Send Tokens
                 </Tab>
               </TabRowGroup>
             </TabRow>
             <ControlPanel>
-              <MultiActionControlLayout>
-                <EditMinterControlForm />
-              </MultiActionControlLayout>
+              <SingleActionControlLayout>
+                <UpdatePoolForm />
+              </SingleActionControlLayout>
             </ControlPanel>
           </Box>
         </Box>

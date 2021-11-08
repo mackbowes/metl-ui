@@ -1,39 +1,23 @@
 import { Box, HStack, StackDivider, Text } from "@chakra-ui/react";
 import DataTableButton from "../DataTableButton";
 
-export default function BurnerTable(props) {
-  let data = props.data;
-  if (data.length < 10) {
-    for (let i = 0; i < 10; i++) {
+export default function AdminTransactionTable(props) {
+  const data = props.data;
+  if (data.length < 20) {
+    for (let i = 0; i < 20; i++) {
       if (typeof data[i] === "undefined") {
         data[i] = {
-          address: "⠀", // special unicode character do not delet
-          name: "⠀",
-          isBurner: "⠀",
+          id: "⠀", // special unicode character do not delet
+          from: "⠀",
+          to: "⠀",
+          amount: "⠀",
+          type: "⠀",
+          isSent: "⠀",
+          time: "⠀",
         };
       }
     }
   }
-  data = data.map((item, index) => {
-    if (item.name.length > 18) {
-      item.name = item.name.substring(0, 15);
-      item.name += `...`;
-    }
-    if (item.address.length == 42) {
-      let first8 = item.address.substring(0, 8);
-      let last4 = item.address.substring(
-        item.address.length - 4,
-        item.address.length
-      );
-      return {
-        address: `${first8}...${last4}`,
-        name: item.name,
-        isBurner: item.isBurner,
-      };
-    } else {
-      return item;
-    }
-  });
 
   return (
     <>
@@ -41,23 +25,35 @@ export default function BurnerTable(props) {
         <HStack
           sx={{
             borderBottom: `1px solid black`,
-            padding: `.5rem 0`,
-            margin: `.5rem 0`,
+            padding: `1rem 0`,
+            margin: `1rem 0`,
             fontSize: `1rem`,
           }}
         >
-          <Box w="156px">
-            <Text>Address</Text>
+          <Box w="137px">
+            <Text>Transaction ID</Text>
           </Box>
-          <Box w="161px">
-            <Text>Name</Text>
+          <Box w="137px">
+            <Text>From</Text>
+          </Box>
+          <Box w="137px">
+            <Text>To</Text>
+          </Box>
+          <Box w="134px">
+            <Text>Amount</Text>
+          </Box>
+          <Box w="115px">
+            <Text>Type</Text>
+          </Box>
+          <Box w="81px">
+            <Text>Send</Text>
           </Box>
           <Box>
-            <Text>Edit Burner Status</Text>
+            <Text>Time</Text>
           </Box>
         </HStack>
         <Box
-          style={{ maxHeight: `24vh`, overflowY: `scroll` }}
+          style={{ maxHeight: `55vh`, overflowY: `scroll` }}
           css={{
             "&::-webkit-scrollbar": {
               width: `16px`,
@@ -87,19 +83,28 @@ export default function BurnerTable(props) {
                   key={`${entry}--${index}`}
                   divider={<StackDivider borderColor="rgba(0,0,0,0.25)" />}
                 >
-                  <Box w="140px" p="4px">
-                    <Text>{entry.isBurner === true && entry.address}</Text>
+                  <Box w="129px" p="4px">
+                    <Text>{entry.id}</Text>
                   </Box>
-                  <Box w="145px" p="4px">
-                    <Text>{entry.isBurner === true && entry.name}</Text>
+                  <Box w="129px" p="4px">
+                    <Text>{entry.from}</Text>
                   </Box>
-                  <Box w="145px" p="4px">
+                  <Box w="129px" p="4px">
+                    <Text>{entry.to}</Text>
+                  </Box>
+                  <Box w="126px" p="4px">
+                    <Text>{entry.amount}</Text>
+                  </Box>
+                  <Box w="107px" p="4px">
+                    <Text>{entry.type}</Text>
+                  </Box>
+                  <Box w="73px" p="4px">
                     <Text>
-                      {entry.isBurner !== "" &&
-                      typeof entry.isBurner === "boolean" ? (
-                        entry.isBurner === true ? (
+                      {entry.isSent !== "" &&
+                      typeof entry.isSent === "boolean" ? (
+                        entry.isSent === true ? (
                           <DataTableButton isDisabled={false}>
-                            remove
+                            send
                           </DataTableButton>
                         ) : (
                           "⠀"
@@ -108,6 +113,9 @@ export default function BurnerTable(props) {
                         "⠀"
                       )}
                     </Text>
+                  </Box>
+                  <Box p="4px">
+                    <Text>{entry.time}</Text>
                   </Box>
                 </HStack>
               );

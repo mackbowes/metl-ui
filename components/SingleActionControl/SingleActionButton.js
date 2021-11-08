@@ -11,7 +11,7 @@ export default function SingleActionButton(props) {
         display: `grid`,
         placeItems: `center`,
         width: `100%`,
-        height: `24px`,
+        height: `32px`,
         fontSize: `16px`,
         fontWeight: `700`,
         boxShadow: `0px 4px 0px rgba(0, 0, 0, 0.5)`,
@@ -25,6 +25,7 @@ export default function SingleActionButton(props) {
         boxShadow: `0px 6px 2px rgba(0, 0, 0, 0.5)`,
         transform: `translateY(-2px)`,
       }}
+      onClick={props.onClick}
     >
       {props.label}
     </Box>

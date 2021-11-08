@@ -12,11 +12,16 @@
     "@chakra-ui/react": "^1.6.10",
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
+    "@walletconnect/web3-provider": "^1.6.6",
     "ethers": "^5.5.1",
     "framer-motion": "^4.1.17",
+    "modal": "^1.2.0",
     "next": "11.1.2",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "web3": "^1.6.0",
+    "web3-eth-contract": "^1.6.0",
+    "web3modal": "^1.9.4"
   },
   "devDependencies": {
     "eslint": "8.0.1",

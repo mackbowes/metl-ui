@@ -6,8 +6,8 @@ import TabRow from "../../components/TabRow";
 import TabRowGroup from "../../components/TabRowGroup";
 import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
-import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
-import EditMinterControlForm from "../../components/admin/EditMinterControlForm";
+import SingleActionControlLayout from "../../components/SingleActionControl/SingleActionControlLayout";
+import SendTokenForm from "../../components/admin/SendTokenForm";
 import { useEffect } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
@@ -36,7 +36,10 @@ export default function Home() {
           <Box>
             <TabRow>
               <TabRowGroup>
-                <Tab isActive={true} clickFunction={() => null}>
+                <Tab
+                  isActive={false}
+                  clickFunction={() => updateRoute("/admin/edit-minters")}
+                >
                   Edit Minters
                 </Tab>
                 <Tab
@@ -65,10 +68,7 @@ export default function Home() {
                 >
                   Review Transactions
                 </Tab>
-                <Tab
-                  isActive={false}
-                  clickFunction={() => updateRoute("/admin/send-tokens")}
-                >
+                <Tab isActive={true} clickFunction={() => null}>
                   Send Tokens
                 </Tab>
                 <Tab
@@ -80,9 +80,9 @@ export default function Home() {
               </TabRowGroup>
             </TabRow>
             <ControlPanel>
-              <MultiActionControlLayout>
-                <EditMinterControlForm />
-              </MultiActionControlLayout>
+              <SingleActionControlLayout>
+                <SendTokenForm />
+              </SingleActionControlLayout>
             </ControlPanel>
           </Box>
         </Box>

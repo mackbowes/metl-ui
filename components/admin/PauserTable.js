@@ -1,9 +1,4 @@
-import {
-  Box,
-  HStack,
-  StackDivider,
-  Text,
-} from "@chakra-ui/react";
+import { Box, HStack, StackDivider, Text } from "@chakra-ui/react";
 import DataTableButton from "../DataTableButton";
 
 export default function PauserTable(props) {
@@ -19,24 +14,26 @@ export default function PauserTable(props) {
       }
     }
   }
-    data = data.map((item, index) => {
-        console.log(item.address.length);
-        if (item.name.length > 18) {
-          item.name = item.name.substring(0,15);
-          item.name += `...`;
-        }
-        if (item.address.length == 42) {
-        let first8 = item.address.substring(0,8);
-        let last4 = item.address.substring(item.address.length - 4, item.address.length);
-        return {
-            address: `${first8}...${last4}`,
-            name: item.name,
-            isPauser: item.isPauser,
-        }
-        } else {
-            return item
-        }
-    })
+  data = data.map((item, index) => {
+    if (item.name.length > 18) {
+      item.name = item.name.substring(0, 15);
+      item.name += `...`;
+    }
+    if (item.address.length == 42) {
+      let first8 = item.address.substring(0, 8);
+      let last4 = item.address.substring(
+        item.address.length - 4,
+        item.address.length
+      );
+      return {
+        address: `${first8}...${last4}`,
+        name: item.name,
+        isPauser: item.isPauser,
+      };
+    } else {
+      return item;
+    }
+  });
 
   return (
     <>
@@ -104,7 +101,9 @@ export default function PauserTable(props) {
                           <DataTableButton isDisabled={false}>
                             remove
                           </DataTableButton>
-                        ) : "⠀"
+                        ) : (
+                          "⠀"
+                        )
                       ) : (
                         "⠀"
                       )}

@@ -23,6 +23,7 @@ export default function SingleActionButton(props) {
         boxShadow: `0px 6px 2px rgba(0, 0, 0, 0.5)`,
         transform: `translateY(-2px)`,
       }}
+      onClick={props.onClick}
     >
       {props.label}
     </Box>
