@@ -76,7 +76,7 @@ export default function Home() {
                   isActive={false}
                   clickFunction={() => updateRoute("/admin/update-pool")}
                 >
-                  Send Tokens
+                  Update Pool
                 </Tab>
               </TabRowGroup>
             </TabRow>

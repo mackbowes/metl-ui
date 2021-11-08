@@ -77,7 +77,7 @@ export default function Home() {
                   Send Tokens
                 </Tab>
                 <Tab isActive={true} clickFunction={() => null}>
-                  Send Tokens
+                  Update Pool
                 </Tab>
               </TabRowGroup>
             </TabRow>

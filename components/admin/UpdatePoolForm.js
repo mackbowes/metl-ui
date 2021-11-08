@@ -5,6 +5,7 @@ import SingleActionAddressInput from "../SingleActionControl/SingleActionAddress
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 import { METLContract } from "../../utils/contract";
+import Web3 from "web3";
 
 export default function UpdatePoolForm(props) {
   const [poolAddress, setPoolAddress] = useState("");
@@ -22,6 +23,13 @@ export default function UpdatePoolForm(props) {
     }
     if (poolAddress === "") {
       setStatusMessage("No target address selected, transaction aborting");
+      setTimeout(() => setStatusMessage(""), 3000);
+      return null;
+    }
+    if (!Web3.utils.isAddress(poolAddress)) {
+      setStatusMessage(
+        "Address incorrectly formatted. Check your input before resubmitting."
+      );
       setTimeout(() => setStatusMessage(""), 3000);
       return null;
     }
@@ -78,7 +86,7 @@ export default function UpdatePoolForm(props) {
         <SingleActionButton
           label={"Update"}
           onClick={async () => {
-            await updatePool();
+            await setPool();
           }}
         />
         {statusMessage.length > 0 && (
