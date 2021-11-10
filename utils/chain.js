@@ -57,6 +57,28 @@ export const supportedChains = {
     rpc_url: "https://rpc-mumbai.maticvigil.com",
     block_explorer: "https://mumbai-explorer.matic.today",
   },
+  "0xa86a": {
+    name: "Avalanche Mainnet C-Chain",
+    short_name: "AVAX C-Chain",
+    chain: "AVAX",
+    network: "c-chain",
+    network_id: 43114,
+    chain_id: "0xa86a",
+    providers: ["walletconnect"],
+    rpc_url: "https://api.avax.network/ext/bc/C/rpc",
+    block_explorer: "https://snowtrace.io/",
+  },
+  "0xa869": {
+    name: "Avalanche FUJI C-Chain",
+    short_name: "FUJI C-Chain",
+    chain: "AVAX",
+    network: "fuji c-chain",
+    network_id: 43113,
+    chain_id: "0xa869",
+    providers: ["walletconnect"],
+    rpc_url: "https://api.avax-test.network/ext/bc/C/rpc",
+    block_explorer: "https://testnet.snowtrace.io/",
+  },
 };
 
 export const chainByID = (chainID) => {
@@ -70,6 +92,7 @@ export const chainByNetworkId = (networkId) => {
     100: supportedChains["0x64"],
     137: supportedChains["0x89"],
     80001: supportedChains["0x13881"],
+    43114: supportedChains["0x43114"],
   };
 
   return idMapping[networkId];

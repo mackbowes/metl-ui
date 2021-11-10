@@ -72,6 +72,7 @@ export default function EditMinterControlForm(props) {
         setTimeout(() => setAddMessage(""), 3000);
         return error;
       });
+    console.log(txResponse);
     const minterAdded = await contract.methods
       .hasRole(minterRole, addMinterAddress)
       .call();

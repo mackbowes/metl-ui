@@ -4,6 +4,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { metlTheme } from "../theme/metlTheme";
 import { InjectedProvider } from "../contexts/InjectedProviderContext";
 import { useEffect } from "react";
+import { Toaster } from "react-hot-toast";
 
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
@@ -18,6 +19,15 @@ function MyApp({ Component, pageProps }) {
         <Head>
           <title>METL</title>
         </Head>
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 5000,
+            style: {
+              border: `2px solid black`,
+            },
+          }}
+        />
         <Component {...pageProps} />
       </InjectedProvider>
     </ChakraProvider>

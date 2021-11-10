@@ -32,6 +32,8 @@ const addNetworkProviders = (chainData) => {
           4: `https://rinkeby.infura.io/v3/9044d022c0f14ecc956da8c71ccdd523`,
           100: `https://dai.poa.network`,
           137: `https://rpc-mainnet.maticvigil.com`,
+          43114: `https://api.avax.network/ext/bc/C/rpc`,
+          43113: `https://api.avax-test.network/ext/bc/C/rpc`,
         },
       },
     };

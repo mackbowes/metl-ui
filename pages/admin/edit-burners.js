@@ -13,7 +13,8 @@ import { useEffect } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
-  const { address, injectedChain, injectedProvider } = useInjectedProvider();
+  const { address, injectedChain, requestWallet, injectedProvider } =
+    useInjectedProvider();
   const router = useRouter();
 
   const updateRoute = (route) => {

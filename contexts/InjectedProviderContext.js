@@ -100,7 +100,7 @@ export const InjectedProvider = ({ children }) => {
   }, [injectedProvider]);
 
   const requestWallet = async () => {
-    connectProvider();
+    await connectProvider();
   };
 
   const disconnectDapp = async () => {

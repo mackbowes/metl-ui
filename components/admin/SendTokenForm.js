@@ -2,7 +2,7 @@ import { useState } from "react";
 import SingleActionButton from "../SingleActionControl/SingleActionButton";
 import SingleActionNumberInput from "../SingleActionControl/SingleActionNumberInput";
 import SingleActionAddressInput from "../SingleActionControl/SingleActionAddressInput";
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Heading, Text, Spinner } from "@chakra-ui/react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 import { METLContract } from "../../utils/contract";
 
@@ -10,6 +10,7 @@ export default function SendTokenForm(props) {
   const [sendAmount, setSendAmount] = useState("");
   const [sendAddress, setSendAddress] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
+  const [isTransacting, setIsTransacting] = useState(false);
   const { address, injectedProvider, injectedChain, requestWallet } =
     useInjectedProvider();
 
@@ -36,26 +37,48 @@ export default function SendTokenForm(props) {
       address,
       injectedProvider
     );
+    const bigSendAmount = BigInt(sendAmount * 10 ** 18);
     const transaction = await contract.methods.poolTransfer(
       sendAddress,
-      sendAmount
+      bigSendAmount
     );
-    const txResponse = await transaction
-      .send("eth_requestAccounts", { from: address })
-      .on("transactionHash", (txHash) => {
-        console.log(txHash);
-        setStatusMessage("Transaction Hash received. Adding In Progress...");
-        setTimeout(() => setStatusMessage(""), 3000);
-        return txHash;
-      })
-      .on("error", (error) => {
-        console.error(error);
-        setStatusMessage(
-          "Error received. Adding Aborted. Check console logs for details."
-        );
-        setTimeout(() => setStatusMessage(""), 3000);
-        return error;
-      });
+    setIsTransacting(true);
+    try {
+      const txResponse = await transaction
+        .send("eth_requestAccounts", { from: address })
+        .on("transactionHash", (txHash) => {
+          console.log(txHash);
+          setStatusMessage(
+            "Transaction Hash received. Transfer In Progress..."
+          );
+          setTimeout(() => setStatusMessage(""), 3000);
+          return txHash;
+        })
+        .once("confirmation", () => {
+          setStatusMessage(
+            "Transaction confirmed. Funds have been transferred."
+          );
+          setTimeout(() => setStatusMessage(""), 3000);
+          setTimeout(() => setIsTransacting(false), 4000);
+        })
+        .on("error", (error) => {
+          console.error(error);
+          setStatusMessage(
+            "Error received. Adding Aborted. Check console logs for details."
+          );
+          setTimeout(() => setStatusMessage(""), 3000);
+          setTimeout(() => setIsTransacting(false), 4000);
+          return error;
+        });
+      console.log(txResponse);
+    } catch (error) {
+      console.error(error);
+      setStatusMessage(
+        "Error received. Adding Aborted. Check console logs for details."
+      );
+      setTimeout(() => setStatusMessage(""), 3000);
+      setTimeout(() => setIsTransacting(false), 4000);
+    }
   }
 
   return (
@@ -79,23 +102,28 @@ export default function SendTokenForm(props) {
           padding: `1ex 1em`,
         }}
       >
-        <SingleActionAddressInput
-          label="Address"
-          val={sendAddress}
-          setVal={setSendAddress}
-        />
-        <SingleActionNumberInput
-          label="Amount"
-          val={sendAmount}
-          setVal={setSendAmount}
-        />
+        {!isTransacting && (
+          <>
+            <SingleActionAddressInput
+              label="Address"
+              val={sendAddress}
+              setVal={setSendAddress}
+            />
+            <SingleActionNumberInput
+              label="Amount"
+              val={sendAmount}
+              setVal={setSendAmount}
+            />
 
-        <SingleActionButton
-          label={"Send"}
-          onClick={async () => {
-            await sendTokens();
-          }}
-        />
+            <SingleActionButton
+              label={"Send"}
+              onClick={async () => {
+                await sendTokens();
+              }}
+            />
+          </>
+        )}
+        {isTransacting && <Spinner size="xl" sx={{ margin: `0 auto` }} />}
         {statusMessage.length > 0 && (
           <Box>
             <Text>{statusMessage}</Text>

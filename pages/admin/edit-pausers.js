@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
 import TopBar from "../../components/TopBar";
+import { Loader } from "../../components/Loader";
 import Page from "../../components/Page";
 import TabRow from "../../components/TabRow";
 import TabRowGroup from "../../components/TabRowGroup";
@@ -12,7 +13,7 @@ import { useEffect } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
-  const { address, injectedChain, injectedProvider, requestWallet } =
+  const { address, injectedChain, requestWallet, injectedProvider } =
     useInjectedProvider();
   const router = useRouter();
 

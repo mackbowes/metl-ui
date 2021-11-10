@@ -1,9 +1,4 @@
-import {
-  Box,
-  HStack,
-  StackDivider,
-  Text,
-} from "@chakra-ui/react";
+import { Box, HStack, StackDivider, Text } from "@chakra-ui/react";
 import DataTableButton from "../DataTableButton";
 
 export default function FreezeTransactionTable(props) {
@@ -19,20 +14,22 @@ export default function FreezeTransactionTable(props) {
       }
     }
   }
-    data = data.map((item, index) => {
-        console.log(item.address.length);
-        if (item.address.length == 42) {
-        let first8 = item.address.substring(0,8);
-        let last4 = item.address.substring(item.address.length - 4, item.address.length);
-        return {
-            address: `${first8}...${last4}`,
-            isFrozen: item.isFrozen,
-            time: item.time,
-        }
-        } else {
-            return item
-        }
-    })
+  data = data.map((item, index) => {
+    if (item.address.length == 42) {
+      let first8 = item.address.substring(0, 8);
+      let last4 = item.address.substring(
+        item.address.length - 4,
+        item.address.length
+      );
+      return {
+        address: `${first8}...${last4}`,
+        isFrozen: item.isFrozen,
+        time: item.time,
+      };
+    } else {
+      return item;
+    }
+  });
 
   return (
     <>
@@ -97,7 +94,9 @@ export default function FreezeTransactionTable(props) {
                           <DataTableButton isDisabled={false}>
                             unfreeze
                           </DataTableButton>
-                        ) : ""
+                        ) : (
+                          ""
+                        )
                       ) : (
                         ""
                       )}

@@ -13,6 +13,12 @@ export default function Home() {
   const [isConnecting, setIsConnecting] = useState(false);
 
   useEffect(() => {
+    if (window) {
+      console.log(window.ethereum);
+    }
+  });
+
+  useEffect(() => {
     async function getWallet() {
       if (!injectedProvider) {
         await requestWallet();
@@ -36,7 +42,7 @@ export default function Home() {
       .hasRole(BurnerRole, address)
       .call();
     if (HasBurner === true) {
-      router.push("/burner");
+      router.push("/burner/burn-tokens");
       return null;
     }
     console.log("Not Burner...");
@@ -45,7 +51,7 @@ export default function Home() {
       .hasRole(FreezerRole, address)
       .call();
     if (HasFreezer === true) {
-      router.push("/freezer");
+      router.push("/freezer/freeze-tokens");
       return null;
     }
     console.log("Not Freezer...");
@@ -54,7 +60,7 @@ export default function Home() {
       .hasRole(MinterRole, address)
       .call();
     if (HasMinter === true) {
-      router.push("/minter");
+      router.push("/minter/mint-tokens");
       return null;
     }
     console.log("Not Minter...");
@@ -63,7 +69,7 @@ export default function Home() {
       .hasRole(PauserRole, address)
       .call();
     if (HasPauser === true) {
-      router.push("/pauser");
+      router.push("/pauser/pause-transactions");
       return null;
     }
     console.log("Not Pauser...");
@@ -103,7 +109,6 @@ export default function Home() {
                 console.log("No Chain");
               }
               if (injectedChain) {
-                console.log("Chain");
                 await getRole(injectedChain?.chainId);
               }
               setTimeout(() => {

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
-import { Box } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import TopBar from "../../components/TopBar";
+import { Loader } from "../../components/Loader";
 import Page from "../../components/Page";
 import TabRow from "../../components/TabRow";
 import TabRowGroup from "../../components/TabRowGroup";
@@ -12,7 +13,8 @@ import { useEffect } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
-  const { address, injectedChain, injectedProvider } = useInjectedProvider();
+  const { address, injectedChain, injectedProvider, requestWallet } =
+    useInjectedProvider();
   const router = useRouter();
 
   const updateRoute = (route) => {
@@ -23,6 +25,9 @@ export default function Home() {
     async function handleData() {
       if (!injectedProvider) {
         await requestWallet();
+      }
+      if (injectedChain) {
+        console.log("chainID: ", injectedChain);
       }
     }
     handleData();
@@ -81,7 +86,37 @@ export default function Home() {
             </TabRow>
             <ControlPanel>
               <SingleActionControlLayout>
-                <SendTokenForm />
+                <Text>
+                  Log In To The Multisig You Want To Transfer Tokens From
+                </Text>
+                <Box
+                  sx={{
+                    padding: `1rem`,
+                    margin: `1rem auto`,
+                    border: `1px solid black`,
+                    textAlign: `center`,
+                    transition: `all 0.25s`,
+                  }}
+                  _hover={{
+                    cursor: `pointer`,
+                    backgroundColor: `black`,
+                    color: `white`,
+                  }}
+                >
+                  {/* This app is Avalanche native by default */}
+                  {injectedChain.chain === "AVAX" ? (
+                    <a
+                      href="https://multisig.pangolin.exchange/"
+                      target="_blank"
+                    >
+                      Open Pangolin
+                    </a>
+                  ) : (
+                    <a href="https://gnosis-safe.io/" target="_blank">
+                      Open Gnosis
+                    </a>
+                  )}
+                </Box>
               </SingleActionControlLayout>
             </ControlPanel>
           </Box>

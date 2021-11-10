@@ -7,9 +7,23 @@ import ControlPanel from "../../components/ControlPanel";
 import SingleActionControlLayout from "../../components/SingleActionControl/SingleActionControlLayout";
 import MintTokenForm from "../../components/minter/MintTokenForm";
 import { useRouter } from "next/router";
+import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
+import { useEffect } from "react";
+import { Loader } from "../../components/Loader";
 
 export default function Home() {
   const router = useRouter();
+
+  const { address, injectedProvider, requestWallet } = useInjectedProvider();
+
+  useEffect(() => {
+    async function getWallet() {
+      if (!injectedProvider) {
+        await requestWallet();
+      }
+    }
+    getWallet();
+  }, [address, injectedProvider]);
 
   return (
     <>

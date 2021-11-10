@@ -7,6 +7,8 @@ import BurnerTable from "./BurnerTable";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 import { METLContract } from "../../utils/contract";
 import Web3 from "web3";
+import toast from "react-hot-toast";
+import BlockScanner from "../BlockScanner";
 
 export default function EditBurnerControlForm(props) {
   const { address, injectedChain, injectedProvider, requestWallet } =
@@ -16,12 +18,14 @@ export default function EditBurnerControlForm(props) {
   const [removeBurnerAddress, setRemoveBurnerAddress] = useState("");
   const [addMessage, setAddMessage] = useState("");
   const [removeMessage, setRemoveMessage] = useState("");
+  const [showBlockScanner, setShowBlockScanner] = useState(false);
+  const [blockScannerContent, setBlockScannerContent] = useState("");
 
   useEffect(() => {
     if (!injectedProvider) {
       requestWallet();
     }
-  }, []);
+  }, [injectedProvider]);
 
   const data = [
     {
@@ -38,6 +42,7 @@ export default function EditBurnerControlForm(props) {
 
   async function addBurner() {
     if (!injectedChain) {
+      toast.error("No Chain Available");
       setAddMessage(
         "Function not ready. Wait or reconnect wallet. Contact Developers if issue persists."
       );
@@ -45,7 +50,16 @@ export default function EditBurnerControlForm(props) {
       return null;
     }
     if (addBurnerAddress === "") {
+      toast.error("No address");
       setAddMessage("No burner address selected, transaction aborting");
+      setTimeout(() => setAddMessage(""), 3000);
+      return null;
+    }
+    if (!Web3.utils.isAddress(addBurnerAddress)) {
+      toast.error("Bad Address");
+      setAddMessage(
+        "Address incorrectly formatted. Check your input before resubmitting."
+      );
       setTimeout(() => setAddMessage(""), 3000);
       return null;
     }
@@ -54,46 +68,38 @@ export default function EditBurnerControlForm(props) {
       address,
       injectedProvider
     );
-    const burnerRole = await contract.methods.BURNER_ROLE().call();
-    if (!Web3.utils.isAddress(addBurnerAddress)) {
-      setAddMessage(
-        "Address incorrectly formatted. Check your input before resubmitting."
-      );
-      setTimeout(() => setAddMessage(""), 3000);
-      return null;
-    }
     const transaction = await contract.methods.addBurner(addBurnerAddress);
+    toast("Initiating Transaction");
     const txResponse = await transaction
       .send("eth_requestAccounts", { from: address })
       .on("transactionHash", (txHash) => {
-        setAddMessage("Transaction Hash received. Adding In Progress...");
+        setBlockScannerContent(txHash);
+        setShowBlockScanner(true);
+        setAddMessage("Transaction in progress...");
+        toast("Transaction hash returned.");
         setTimeout(() => setAddMessage(""), 3000);
         return txHash;
       })
+      .once("confirmation", () => {
+        toast.success("Transaction Succeeded");
+        setTimeout(() => setShowBlockScanner(false), 10000);
+        // todo: POST burnerName and Address to METL API
+      })
       .on("error", (error) => {
         console.error(error);
+        toast.error("Transaction Failed");
         setAddMessage(
           "Error received. Adding Aborted. Check console logs for details."
         );
         setTimeout(() => setAddMessage(""), 3000);
+        setTimeout(() => setShowBlockScanner(false), 10000);
         return error;
       });
-    const burnerAdded = await contract.methods
-      .hasRole(burnerRole, addBurnerAddress)
-      .call();
-    if (burnerAdded === true) {
-      setAddMessage("Granting complete. Address may now burn.");
-      setTimeout(() => setAddMessage(""), 5000);
-    }
-    if (burnerAdded !== true) {
-      setAddMessage("Granting Failed. Address may not burn.");
-      setTimeout(() => setAddMessage(""), 5000);
-    }
-    // todo: if (burnerAdded === true), POST burnerName & address to METL API
   }
 
   async function removeBurner() {
     if (!injectedChain) {
+      toast.error("No Chain Available");
       setRemoveMessage(
         "Function not ready. Wait or reconnect wallet. Contact Developers if issue persists."
       );
@@ -101,15 +107,17 @@ export default function EditBurnerControlForm(props) {
       return null;
     }
     if (removeBurnerAddress === "") {
+      toast.error("No address");
       setRemoveMessage("No address selected, transaction aborting.");
       setTimeout(() => setRemoveMessage(""), 3000);
       return null;
     }
     if (!Web3.utils.isAddress(removeBurnerAddress)) {
-      setAddMessage(
+      toast.error("Bad Address");
+      setRemoveMessage(
         "Address incorrectly formatted. Check your input before resubmitting."
       );
-      setTimeout(() => setAddMessage(""), 3000);
+      setTimeout(() => setRemoveMessage(""), 3000);
       return null;
     }
     const contract = METLContract(
@@ -121,34 +129,32 @@ export default function EditBurnerControlForm(props) {
     const transaction = await contract.methods.removeBurner(
       removeBurnerAddress
     );
+    toast("Initiating Transaction");
     const txResponse = await transaction
       .send("eth_request")
       .on("transactionHash", (txHash) => {
+        toast.success("Transaction Hash returned");
+        setBlockScannerContent(txHash);
+        setShowBlockScanner(true);
         setRemoveMessage("Transaction Hash received. Removal In Progress...");
         setTimeout(() => setRemoveMessage(""), 3000);
         return txHash;
       })
+      .once("Confirmation", () => {
+        toast.success("Transaction confirmed");
+        setRemoveMessage("Transaction confirmed. Address has been removed.");
+        setTimeout(() => setShowBlockScanner(false), 10000);
+        // TODO: DELETE request to METL API with address and name
+      })
       .on("error", (error) => {
         console.error(error);
+        toast.error("Transaction failed.");
         setRemoveMessage(
           "Error received. Removal aborted, check console logs for details."
         );
         setTimeout(() => setRemoveMessage(""), 3000);
         return error;
       });
-    // hasRole should return 'false'
-    const hasBurnerRole = await contract.methods
-      .hasRole(burnerRole, removeBurnerAddress)
-      .call();
-    if (!hasBurnerRole === true) {
-      setRemoveMessage("Revoking Complete. Address may no longer burn.");
-      setTimeout(() => setRemoveMessage(""), 3000);
-    }
-    if (hasBurnerRole === true) {
-      setAddMessage("Revoking Failed. Address may STILL burn.");
-      setTimeout(() => setAddMessage(""), 5000);
-    }
-    // todo: if (burnerRemoved === true), DELETE burnerName & address to METL API
   }
 
   return (
@@ -220,6 +226,7 @@ export default function EditBurnerControlForm(props) {
             <Box sx={{ padding: `0 1rem` }}>{removeMessage}</Box>
           )}
         </Box>
+        {showBlockScanner && <BlockScanner txHash={blockScannerContent} />}
         <Heading
           sx={{
             display: `block`,

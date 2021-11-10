@@ -11,11 +11,12 @@ import AdminTransactionTable from "../../components/admin/AdminTransactionTable"
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
+import toast from "react-hot-toast";
 
 export default function Home() {
-  const { address, injectedChain, injectedProvider } = useInjectedProvider();
+  const { address, requestWallet, injectedProvider } = useInjectedProvider();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const updateRoute = (route) => {
     router.push(route);
@@ -24,6 +25,7 @@ export default function Home() {
   useEffect(() => {
     async function handleData() {
       if (!injectedProvider) {
+        toast("Getting Wallet Info");
         await requestWallet();
       }
     }

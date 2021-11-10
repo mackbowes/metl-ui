@@ -10,36 +10,30 @@ import BurnTokenForm from "../../components/burner/BurnTokenForm";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
-import { isBurner } from "../../utils/roles";
 
 export default function Home() {
-  const { address, injectedChain, injectedProvider, requestWallet } =
-    useInjectedProvider();
+  const { address, injectedProvider, requestWallet } = useInjectedProvider();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   async function handleData() {
+  //     if (!injectedProvider) {
+  //       await requestWallet();
+  //     }
+  //     setIsLoading(false);
+  //   }
+  //   handleData();
+  // }, [address, injectedProvider]);
 
   useEffect(() => {
-    setIsLoading(true);
-    async function handleData() {
+    async function getWallet() {
       if (!injectedProvider) {
         await requestWallet();
       }
-      if (router && address && injectedChain && injectedProvider) {
-        const burnerStatus = await isBurner({
-          address,
-          injectedChain,
-          injectedProvider,
-        });
-        if (!burnerStatus) {
-          router.push("/");
-        }
-        setIsLoading(burnerStatus);
-      }
-      if (!address || !injectedChain || !injectedProvider) {
-        router.push("/");
-      }
     }
-    handleData();
+    getWallet();
   }, [address, injectedProvider]);
 
   return (

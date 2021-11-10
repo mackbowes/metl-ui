@@ -51,6 +51,9 @@ export default function EditPauserControlForm(props) {
         setTimeout(() => setAddMessage(""), 3000);
         return txHash;
       })
+      .once("confirmation", () => {
+        setAddMessage("Transaction complete. User Added.");
+      })
       .on("error", (error) => {
         console.error(error);
         setAddMessage(
@@ -107,6 +110,9 @@ export default function EditPauserControlForm(props) {
         setRemoveMessage("Transaction Hash received. Revoking In Progress...");
         setTimeout(() => setRemoveMessage(""), 3000);
         return txHash;
+      })
+      .once("confirmation", () => {
+        setRemoveMessage("Transaction confirmed. User Revoked.");
       })
       .on("error", (error) => {
         console.error(error);

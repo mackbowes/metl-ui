@@ -208,8 +208,8 @@ export default function EditFreezerControlForm(props) {
             }}
           />
           <Box sx={{ width: `1rem` }}></Box>
-          {addMessage.length > 0 && (
-            <Box sx={{ padding: `0 1rem` }}>{addMessage}</Box>
+          {removeMessage.length > 0 && (
+            <Box sx={{ padding: `0 1rem` }}>{removeMessage}</Box>
           )}
         </Box>
         <Heading
