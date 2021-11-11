@@ -8,11 +8,11 @@ import { METLContract } from "../../utils/contract";
 import toastHandler from "../../utils/toastHandling";
 import BlockScanner from "../BlockScanner";
 import toast from "react-hot-toast";
+import Web3 from "web3";
 
 export default function MintTokenForm(props) {
   const [mintAmount, setMintAmount] = useState("");
   const [mintTarget, setMintTarget] = useState("");
-  const [isTransacting, setIsTransacting] = useState(false);
   const [showBlockScanner, setShowBlockScanner] = useState(false);
   const [blockScannerContent, setBlockScannerContent] = useState("");
 
