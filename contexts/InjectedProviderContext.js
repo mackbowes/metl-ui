@@ -95,9 +95,9 @@ export const InjectedProvider = ({ children }) => {
           .on("chainChanged", handleChainChange);
         hasListeners.current = true;
       }
-      return () => unsub();
+      // return () => unsub();
     };
-  }, [injectedProvider]);
+  }, [injectedProvider, injectedChain]);
 
   const requestWallet = async () => {
     await connectProvider();

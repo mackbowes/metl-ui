@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Spinner } from "@chakra-ui/react";
+import { Box, Spinner, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ConnectWalletButton from "../components/ConnectWalletButton";
 
@@ -11,6 +11,7 @@ export default function Home() {
   const { address, injectedProvider, injectedChain, requestWallet } =
     useInjectedProvider();
   const [isConnecting, setIsConnecting] = useState(false);
+  const [chain, setChain] = useState("No Supported");
 
   useEffect(() => {
     if (window) {
@@ -26,6 +27,18 @@ export default function Home() {
     }
     getWallet();
   }, [address, injectedProvider]);
+
+  useEffect(() => {
+    if (injectedChain?.chainId) {
+      console.log(injectedChain.chainId);
+      if (injectedChain.chainId === "0xa869") {
+        setChain("Fuji");
+      }
+      if (injectedChain.chainId === "0xa86a") {
+        setChain("Avalanche");
+      }
+    }
+  }, [injectedChain]);
 
   async function getRole(chainID) {
     console.log("Getting Role...");
@@ -116,8 +129,23 @@ export default function Home() {
               }, 2000);
             }}
           >
-            {isConnecting ? <Spinner /> : `Connect Wallet`}
+            {isConnecting && <Spinner />}
+            {injectedChain && !isConnecting && "Log In"}
+            {!injectedChain && !isConnecting && "Connect Wallet"}
           </ConnectWalletButton>
+          {chain.length > 0 && (
+            <Box
+              sx={{
+                width: `100%`,
+                textAlign: `center`,
+                padding: `1rem`,
+                margin: `1rem 0`,
+                border: `1px solid orange`,
+              }}
+            >
+              {`${chain} network detected`}
+            </Box>
+          )}
         </Box>
       </Box>
     </>

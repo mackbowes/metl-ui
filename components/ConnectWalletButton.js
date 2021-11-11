@@ -11,7 +11,6 @@ export default function ConnectWalletButton(props) {
           textTransform: `uppercase`,
           display: `grid`,
           placeItems: `center`,
-          width: `206px`,
           height: `43px`,
           fontSize: `16px`,
           fontWeight: `700`,
