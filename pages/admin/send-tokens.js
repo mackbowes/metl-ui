@@ -9,13 +9,16 @@ import Tab from "../../components/Tab";
 import ControlPanel from "../../components/ControlPanel";
 import SingleActionControlLayout from "../../components/SingleActionControl/SingleActionControlLayout";
 import SendTokenForm from "../../components/admin/SendTokenForm";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 
 export default function Home() {
   const { address, injectedChain, injectedProvider, requestWallet } =
     useInjectedProvider();
   const router = useRouter();
+
+  const [isAvax, setIsAvax] = useState(false);
+  const [isFuji, setIsFuji] = useState(false);
 
   const updateRoute = (route) => {
     router.push(route);
@@ -27,7 +30,12 @@ export default function Home() {
         await requestWallet();
       }
       if (injectedChain) {
-        console.log("chainID: ", injectedChain);
+        if (injectedChain.chainId === "0xa869") {
+          setIsFuji(true);
+        }
+        if (injectedChain.chainId === "0xa86a") {
+          setIsAvax(true);
+        }
       }
     }
     handleData();
@@ -80,7 +88,7 @@ export default function Home() {
                   isActive={false}
                   clickFunction={() => updateRoute("/admin/update-pool")}
                 >
-                  Update Pool
+                  Update Pools
                 </Tab>
               </TabRowGroup>
             </TabRow>
@@ -104,7 +112,28 @@ export default function Home() {
                   }}
                 >
                   {/* This app is Avalanche native by default */}
-                  {injectedChain.chain === "AVAX" ? (
+                  {isFuji && (
+                    <a
+                      href="https://multisig.pangolin.exchange/"
+                      target="_blank"
+                    >
+                      Open Pangolin
+                    </a>
+                  )}
+                  {isAvax && (
+                    <a
+                      href="https://multisig.pangolin.exchange/"
+                      target="_blank"
+                    >
+                      Open Pangolin
+                    </a>
+                  )}
+                  {!isFuji && !isAvax && (
+                    <a href="https://gnosis-safe.io/" target="_blank">
+                      Open Gnosis
+                    </a>
+                  )}
+                  {/* {injectedChain.chain === "AVAX" ? (
                     <a
                       href="https://multisig.pangolin.exchange/"
                       target="_blank"
@@ -115,7 +144,7 @@ export default function Home() {
                     <a href="https://gnosis-safe.io/" target="_blank">
                       Open Gnosis
                     </a>
-                  )}
+                  )} */}
                 </Box>
               </SingleActionControlLayout>
             </ControlPanel>

@@ -22,6 +22,7 @@ export default function MultiActionAddressInput(props) {
         minWidth: `50ch`,
         width: `auto`,
         backgroundColor: `rgba(0,0,0,0.05)`,
+        border: `2px solid transparent`,
       }}
       css={{
         "&::placeholder": {

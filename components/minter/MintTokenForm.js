@@ -5,21 +5,34 @@ import SingleActionAddressInput from "../SingleActionControl/SingleActionAddress
 import { Box, Heading, Text, Spinner } from "@chakra-ui/react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 import { METLContract } from "../../utils/contract";
+import toastHandler from "../../utils/toastHandling";
+import BlockScanner from "../BlockScanner";
+import toast from "react-hot-toast";
 
 export default function MintTokenForm(props) {
-  const [mintAmount, setMintAmount] = useState();
-  const [mintTarget, setMintTarget] = useState();
-  const [statusMessage, setStatusMessage] = useState("");
+  const [mintAmount, setMintAmount] = useState("");
+  const [mintTarget, setMintTarget] = useState("");
   const [isTransacting, setIsTransacting] = useState(false);
+  const [showBlockScanner, setShowBlockScanner] = useState(false);
+  const [blockScannerContent, setBlockScannerContent] = useState("");
 
   const { address, injectedChain, injectedProvider } = useInjectedProvider();
 
-  async function poolMint() {
+  async function bankMint() {
     if (!injectedChain) {
-      setStatusMessage(
+      toast.error(
         "Function not ready. Wait or reconnect wallet. Contact Developers if issue persists."
       );
-      setTimeout(() => setStatusMessage(""), 3000);
+      return null;
+    }
+    if (mintTarget === "") {
+      toast.error("No Pauser address selected, transaction aborting");
+      return null;
+    }
+    if (!Web3.utils.isAddress(mintTarget)) {
+      toast.error(
+        "Address incorrectly formatted. Check your input before resubmitting."
+      );
       return null;
     }
     const contract = METLContract(
@@ -28,29 +41,8 @@ export default function MintTokenForm(props) {
       injectedProvider
     );
     const amount = BigInt(mintAmount * 10 ** 18);
-    const transaction = await contract.methods.poolMint(amount);
-    const txResponse = await transaction
-      .send("eth_requestAccounts")
-      .on("transactionHash", (txHash) => {
-        console.log(txHash);
-        setStatusMessage("Transaction Hash received. Adding In Progress...");
-        setTimeout(() => setStatusMessage(""), 3000);
-        return txHash;
-      })
-      .once("confirmation", (confNumber, receipt, latestBlockHash) => {
-        console.log(receipt);
-        setStatusMessage("Transaction confirmed.");
-        setTimeout(() => setStatusMessage(""), 3000);
-      })
-      .on("error", (error) => {
-        console.error(error);
-        setStatusMessage(
-          "Error received. Adding Aborted. Check console logs for details."
-        );
-        setTimeout(() => setStatusMessage(""), 3000);
-        return error;
-      });
-    console.log(txResponse);
+    const transaction = await contract.methods.bankMint(mintTarget, amount);
+    toastHandler(transaction, setBlockScannerContent, setShowBlockScanner);
   }
 
   return (
@@ -86,10 +78,11 @@ export default function MintTokenForm(props) {
         />
         <SingleActionButton
           label={"Mint"}
-          onClick={async () => await poolMint()}
+          onClick={async () => await bankMint()}
         />
-        <Box sx={{ minHeight: `1rem` }}></Box>
-        {statusMessage.length > 0 && <Text>{statusMessage}</Text>}
+        {showBlockScanner && <BlockScanner txHash={blockScannerContent} />}
+        {/* <Box sx={{ minHeight: `1rem` }}></Box>
+        {statusMessage.length > 0 && <Text>{statusMessage}</Text>} */}
       </Box>
     </Box>
   );

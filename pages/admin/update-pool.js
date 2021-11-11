@@ -6,7 +6,7 @@ import Tab from "../../components/Tab";
 import TabRow from "../../components/TabRow";
 import TabRowGroup from "../../components/TabRowGroup";
 import ControlPanel from "../../components/ControlPanel";
-import SingleActionControlLayout from "../../components/SingleActionControl/SingleActionControlLayout";
+import MultiActionControlLayout from "../../components/MultiActionControl/MultiActionControlLayout";
 import UpdatePoolForm from "../../components/admin/UpdatePoolForm";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
@@ -77,14 +77,14 @@ export default function Home() {
                   Send Tokens
                 </Tab>
                 <Tab isActive={true} clickFunction={() => null}>
-                  Update Pool
+                  Update Pools
                 </Tab>
               </TabRowGroup>
             </TabRow>
             <ControlPanel>
-              <SingleActionControlLayout>
+              <MultiActionControlLayout>
                 <UpdatePoolForm />
-              </SingleActionControlLayout>
+              </MultiActionControlLayout>
             </ControlPanel>
           </Box>
         </Box>

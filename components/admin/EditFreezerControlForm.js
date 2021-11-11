@@ -7,14 +7,18 @@ import FreezerTable from "./FreezerTable";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 import { METLContract } from "../../utils/contract";
 import Web3 from "web3";
+import BlockScanner from "../BlockScanner";
+import toast from "react-hot-toast";
+import toastHandler from "../../utils/toastHandling";
 
 export default function EditFreezerControlForm(props) {
   const { address, injectedChain, injectedProvider } = useInjectedProvider();
   const [addFreezerAddress, setAddFreezerAddress] = useState("");
   const [addFreezerName, setAddFreezerName] = useState("");
   const [removeFreezerAddress, setRemoveFreezerAddress] = useState("");
-  const [addMessage, setAddMessage] = useState("");
-  const [removeMessage, setRemoveMessage] = useState("");
+
+  const [showBlockScanner, setShowBlockScanner] = useState(false);
+  const [blockScannerContent, setBlockScannerContent] = useState("");
 
   const data = [
     {
@@ -31,15 +35,19 @@ export default function EditFreezerControlForm(props) {
 
   async function addFreezer() {
     if (!injectedChain) {
-      setAddMessage(
+      toast.error(
         "Function not ready. Wait or reconnect wallet. Contact Developers if issue persists."
       );
-      setTimeout(() => setAddMessage(""), 3000);
       return null;
     }
     if (addFreezerAddress === "") {
-      setAddMessage("No Freezer address selected, transaction aborting");
-      setTimeout(() => setAddMessage(""), 3000);
+      toast.error("No Freezer address selected, transaction aborting");
+      return null;
+    }
+    if (!Web3.utils.isAddress(addFreezerAddress)) {
+      toast.error(
+        "Address incorrectly formatted. Check your input before resubmitting."
+      );
       return null;
     }
     const contract = METLContract(
@@ -47,42 +55,12 @@ export default function EditFreezerControlForm(props) {
       address,
       injectedProvider
     );
-    const freezerRole = await contract.methods.FREEZER_ROLE().call();
-    if (!Web3.utils.isAddress(addFreezerAddress)) {
-      setAddMessage(
-        "Address incorrectly formatted. Check your input before resubmitting."
-      );
-      setTimeout(() => setAddMessage(""), 3000);
-      return null;
-    }
     const transaction = await contract.methods.addFreezer(addFreezerAddress);
-    const txResponse = await transaction
-      .send("eth_requestAccounts", { from: address })
-      .on("transactionHash", (txHash) => {
-        console.log(txHash);
-        setAddMessage("Transaction Hash received. Adding In Progress...");
-        setTimeout(() => setAddMessage(""), 3000);
-        return txHash;
-      })
-      .on("error", (error) => {
-        console.error(error);
-        setAddMessage(
-          "Error received. Adding Aborted. Check console logs for details."
-        );
-        setTimeout(() => setAddMessage(""), 3000);
-        return error;
-      });
-    const freezerAdded = await contract.methods
-      .hasRole(freezerRole, addFreezerAddress)
-      .call();
-    if (freezerAdded === true) {
-      setAddMessage("Granting complete. Address may now freeze.");
-      setTimeout(() => setAddMessage(""), 5000);
-    }
-    if (freezerAdded !== true) {
-      setAddMessage("Granting Failed. Address may not freeze.");
-      setTimeout(() => setAddMessage(""), 5000);
-    }
+    await toastHandler(
+      transaction,
+      setBlockScannerContent,
+      setShowBlockScanner
+    );
   }
 
   async function removeFreezer() {
@@ -110,36 +88,14 @@ export default function EditFreezerControlForm(props) {
       address,
       injectedProvider
     );
-    const freezerRole = await contract.methods.FREEZER_ROLE().call();
     const transaction = await contract.methods.removeFreezer(
       removeFreezerAddress
     );
-    const txResponse = await transaction
-      .send("eth_request")
-      .on("transactionHash", (txHash) => {
-        setRemoveMessage("Transaction Hash received. Revoking In Progress...");
-        setTimeout(() => setRemoveMessage(""), 3000);
-        return txHash;
-      })
-      .on("error", (error) => {
-        console.error(error);
-        setRemoveMessage(
-          "Error received. Revoking aborted. Check console logs for details."
-        );
-        setTimeout(() => setRemoveMessage(""), 3000);
-        return error;
-      });
-    const hasFreezer = await contract.methods
-      .hasRole(freezerRole, removeFreezerAddress)
-      .call();
-    if (!hasFreezer === true) {
-      setRemoveMessage("Revoking Complete. Address may no longer freeze.");
-      setTimeout(() => setRemoveMessage(""), 3000);
-    }
-    if (hasFreezer === true) {
-      setRemoveMessage("Revoking Failed. Address may still freeze.");
-      setTimeout(() => setRemoveMessage(""), 3000);
-    }
+    await toastHandler(
+      transaction,
+      setBlockScannerContent,
+      setShowBlockScanner
+    );
   }
 
   return (
@@ -168,21 +124,17 @@ export default function EditFreezerControlForm(props) {
             setVal={setAddFreezerAddress}
           />
           <Box sx={{ width: `1rem` }}></Box>
-          <MultiActionTextInput
+          {/* <MultiActionTextInput
             val={addFreezerName}
             setVal={setAddFreezerName}
-          />
-          <Box sx={{ width: `1rem` }}></Box>
+          /> */}
+          {/* <Box sx={{ width: `1rem` }}></Box> */}
           <MultiActionButton
             label={"Add"}
             onClick={async () => {
               await addFreezer();
             }}
           />
-          <Box sx={{ width: `1rem` }}></Box>
-          {addMessage.length > 0 && (
-            <Box sx={{ padding: `0 1rem` }}>{addMessage}</Box>
-          )}
         </Box>
         <Heading
           sx={{
@@ -207,12 +159,9 @@ export default function EditFreezerControlForm(props) {
               await removeFreezer();
             }}
           />
-          <Box sx={{ width: `1rem` }}></Box>
-          {removeMessage.length > 0 && (
-            <Box sx={{ padding: `0 1rem` }}>{removeMessage}</Box>
-          )}
         </Box>
-        <Heading
+        {showBlockScanner && <BlockScanner txHash={blockScannerContent} />}
+        {/* <Heading
           sx={{
             display: `block`,
             borderBottom: `1px solid black`,
@@ -224,7 +173,7 @@ export default function EditFreezerControlForm(props) {
           Current Freezers
         </Heading>
 
-        <FreezerTable data={data} />
+        <FreezerTable data={data} /> */}
       </Box>
     </>
   );
