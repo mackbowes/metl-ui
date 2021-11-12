@@ -1,5 +1,10 @@
 import { extendTheme } from "@chakra-ui/react";
 
+const config = {
+  initialColorMode: "light",
+  useSystemColorMode: false,
+};
+
 const colors = {
   brand: {
     100: "black",
@@ -8,4 +13,4 @@ const colors = {
   },
 };
 
-export const metlTheme = extendTheme({ colors });
+export const metlTheme = extendTheme({ colors, config });
