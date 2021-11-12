@@ -2,11 +2,11 @@ import "../styles/globals.css";
 import Head from "next/head";
 import { ChakraProvider } from "@chakra-ui/react";
 import { metlTheme } from "../theme/metlTheme";
-import { InjectedProvider } from "../contexts/InjectedProviderContext";
+import { InjectedProviderFC } from "../contexts/InjectedProviderContext";
 import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 
-function MyApp({ Component, pageProps }) {
+function METL({ Component, pageProps }) {
   useEffect(() => {
     window.onunload = () => {
       sessionStorage.clear();
@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <ChakraProvider theme={metlTheme}>
-      <InjectedProvider>
+      <InjectedProviderFC>
         <Head>
           <title>METL</title>
         </Head>
@@ -29,9 +29,9 @@ function MyApp({ Component, pageProps }) {
           }}
         />
         <Component {...pageProps} />
-      </InjectedProvider>
+      </InjectedProviderFC>
     </ChakraProvider>
   );
 }
 
-export default MyApp;
+export default METL;

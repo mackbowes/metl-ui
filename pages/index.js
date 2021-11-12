@@ -2,15 +2,20 @@ import { useState, useEffect } from "react";
 import { Box, Spinner, Text } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 import ConnectWalletButton from "../components/ConnectWalletButton";
-
+import { Loader } from "../components/Loader";
 import { useInjectedProvider } from "../contexts/InjectedProviderContext";
 import { METLContract } from "../utils/contract";
 import toast from "react-hot-toast";
 
 export default function Home() {
   const router = useRouter();
-  const { address, injectedProvider, injectedChain, requestWallet } =
-    useInjectedProvider();
+  const {
+    address,
+    injectedProvider,
+    injectedChain,
+    requestWallet,
+    isUpdating,
+  } = useInjectedProvider();
   const [isConnecting, setIsConnecting] = useState(false);
   const [chain, setChain] = useState("No Supported");
 
@@ -33,6 +38,7 @@ export default function Home() {
 
   useEffect(() => {
     if (injectedChain?.chainId) {
+      setChain("No Supported");
       if (injectedChain.chainId === "0xa869") {
         setChain("Fuji");
       }
@@ -42,10 +48,21 @@ export default function Home() {
     }
   }, [injectedChain]);
 
-  async function getRole(chainID) {
+  async function getRole() {
     toast("Getting Role...");
     try {
-      const contract = METLContract(chainID, address, injectedProvider);
+      console.log(injectedProvider);
+      if (!injectedProvider) {
+        throw "No wallet connected.";
+      }
+      if (!injectedChain?.chainId) {
+        throw "Can't Identify blockchain network";
+      }
+      const contract = METLContract(
+        injectedChain.chainId,
+        address,
+        injectedProvider
+      );
       const adminRole = await contract.methods.DEFAULT_ADMIN_ROLE().call();
       const hasAdmin = await contract.methods
         .hasRole(adminRole, address)
@@ -96,7 +113,8 @@ export default function Home() {
       return null;
     } catch (error) {
       toast.error("Error detected.");
-      if (error.message.substring(0, 15) === "Returned values") {
+      console.error(error);
+      if (error?.message?.substring(0, 15) === "Returned values") {
         setTimeout(() => {
           toast.error("Contract creation failed. Check network.");
         }, 1000);
@@ -106,61 +124,64 @@ export default function Home() {
 
   return (
     <>
-      <Box
-        sx={{
-          display: `grid`,
-          placeItems: `center`,
-          backgroundColor: `white`,
-          width: `100vw`,
-          height: `100vh`,
-          position: `absolute`,
-          left: `0`,
-          top: `0`,
-          userSelect: `none`,
-        }}
-      >
-        <Box>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            draggable="false"
-            src="/metl2.png"
-            alt="Metl Logo"
-            style={{ margin: `1rem auto`, userSelect: `none` }}
-          />
-          <ConnectWalletButton
-            clickFunction={async () => {
-              setIsConnecting(true);
-              await requestWallet();
-              if (!injectedChain) {
-                console.log("No Chain");
-              }
-              if (injectedChain) {
-                await getRole(injectedChain?.chainId);
-              }
-              setTimeout(() => {
-                setIsConnecting(false);
-              }, 2000);
-            }}
-          >
-            {isConnecting && <Spinner />}
-            {injectedChain && !isConnecting && "Log In"}
-            {!injectedChain && !isConnecting && "Connect Wallet"}
-          </ConnectWalletButton>
-          {chain.length > 0 && (
-            <Box
-              sx={{
-                width: `100%`,
-                textAlign: `center`,
-                padding: `1rem`,
-                margin: `1rem 0`,
-                border: `1px solid orange`,
+      {isUpdating && <Loader />}
+      {!isUpdating && (
+        <Box
+          sx={{
+            display: `grid`,
+            placeItems: `center`,
+            backgroundColor: `white`,
+            width: `100vw`,
+            height: `100vh`,
+            position: `absolute`,
+            left: `0`,
+            top: `0`,
+            userSelect: `none`,
+          }}
+        >
+          <Box>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              draggable="false"
+              src="/metl2.png"
+              alt="Metl Logo"
+              style={{ margin: `1rem auto`, userSelect: `none` }}
+            />
+            <ConnectWalletButton
+              clickFunction={async () => {
+                setIsConnecting(true);
+                await requestWallet();
+                if (!injectedChain) {
+                  console.log("No Chain");
+                }
+                if (injectedChain) {
+                  await getRole();
+                }
+                setTimeout(() => {
+                  setIsConnecting(false);
+                }, 2000);
               }}
             >
-              {`${chain} network detected`}
-            </Box>
-          )}
+              {isConnecting && <Spinner />}
+              {injectedChain && !isConnecting && "Log In"}
+              {!injectedChain && !isConnecting && "Connect Wallet"}
+            </ConnectWalletButton>
+            {chain.length > 0 && (
+              <Box
+                sx={{
+                  width: `100%`,
+                  textAlign: `center`,
+                  padding: `1rem`,
+                  margin: `1rem 0`,
+                  border: `1px solid orange`,
+                }}
+              >
+                {`${chain} network detected`}
+              </Box>
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
     </>
   );
 }

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { useState, useEffect, useContext, createContext, useRef } from "react";
 import Web3 from "web3";
 import Web3Modal from "web3modal";
@@ -11,21 +10,21 @@ import {
 
 export const InjectedProviderContext = createContext(null);
 
-export const InjectedProvider = ({ children }) => {
+export const InjectedProviderFC = ({ children }) => {
   const [injectedProvider, setInjectedProvider] = useState(null);
   const [address, setAddress] = useState(null);
   const [injectedChain, setInjectedChain] = useState(null);
   const [web3Modal, setWeb3Modal] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const hasListeners = useRef(null);
 
   const connectProvider = async () => {
+    setIsUpdating(true);
     const providerOptions = getProviderOptions();
 
     const defaultModal = new Web3Modal({
-      providerOptions: getProviderOptions(),
-      cacheProvider: true,
-      theme: "dark",
+      providerOptions: providerOptions,
     });
 
     if (!providerOptions) {
@@ -39,12 +38,24 @@ export const InjectedProvider = ({ children }) => {
     const localWeb3Modal = new Web3Modal({
       providerOptions,
       cacheProvider: true,
-      theme: "dark",
+      theme: "light",
     });
 
     const provider = await localWeb3Modal.connect();
 
+    // console.log(provider);
+
     provider.selectedAddress = deriveSelectedAddress(provider);
+
+    provider.on("chainChanged", (chainId) => {
+      const newChain = { ...supportedChains[chainId], chainId };
+      setInjectedChain(newChain);
+    });
+
+    provider.on("accountChanged", () => {
+      const newWeb3 = new Web3(provider);
+      setInjectedProvider(newWeb3);
+    });
 
     const chainId = deriveChainId(provider);
 
@@ -61,6 +72,7 @@ export const InjectedProvider = ({ children }) => {
       setInjectedChain(chain);
       setWeb3Modal(localWeb3Modal);
     }
+    setIsUpdating(false);
   };
 
   useEffect(() => {
@@ -68,11 +80,14 @@ export const InjectedProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    setIsUpdating(true);
     const handleChainChange = () => {
+      console.log("handling chain");
       connectProvider();
     };
 
     const accountsChanged = () => {
+      console.log("handling account");
       connectProvider();
     };
 
@@ -82,22 +97,24 @@ export const InjectedProvider = ({ children }) => {
           "accountsChanged",
           accountsChanged
         );
-
         injectedProvider.currentProvider.removeListener(
           "chainChanged",
           handleChainChange
         );
       }
-
-      if (injectedProvider?.currentProvider && !hasListeners.current) {
-        injectedProvider.currentProvider
-          .on("accountsChanged", accountsChanged)
-          .on("chainChanged", handleChainChange);
-        hasListeners.current = true;
-      }
-      // return () => unsub();
     };
-  }, [injectedProvider, injectedChain]);
+
+    if (injectedProvider?.currentProvider && !hasListeners.current) {
+      console.log("adding listeners");
+      injectedProvider.currentProvider
+        .on("accountsChanged", accountsChanged)
+        .on("chainChanged", handleChainChange);
+      hasListeners.current = true;
+      console.log("listeners added");
+    }
+    setIsUpdating(false);
+    return () => unsub();
+  }, [injectedProvider]);
 
   const requestWallet = async () => {
     await connectProvider();
@@ -125,6 +142,7 @@ export const InjectedProvider = ({ children }) => {
         injectedChain,
         address,
         web3Modal,
+        isUpdating,
       }}
     >
       {children}
@@ -140,6 +158,7 @@ export const useInjectedProvider = () => {
     injectedChain,
     address,
     web3Modal,
+    isUpdating,
   } = useContext(InjectedProviderContext);
   return {
     injectedProvider,
@@ -148,5 +167,6 @@ export const useInjectedProvider = () => {
     injectedChain,
     address,
     web3Modal,
+    isUpdating,
   };
 };
