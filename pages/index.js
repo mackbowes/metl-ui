@@ -5,6 +5,7 @@ import ConnectWalletButton from "../components/ConnectWalletButton";
 
 import { useInjectedProvider } from "../contexts/InjectedProviderContext";
 import { METLContract } from "../utils/contract";
+import toast from "react-hot-toast";
 
 export default function Home() {
   const router = useRouter();
@@ -13,16 +14,18 @@ export default function Home() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [chain, setChain] = useState("No Supported");
 
-  useEffect(() => {
-    if (window) {
-      console.log(window.ethereum);
-    }
-  });
+  // useEffect(() => {
+  //   if (window) {
+  //     console.log(window.ethereum);
+  //   }
+  // });
 
   useEffect(() => {
     async function getWallet() {
       if (!injectedProvider) {
+        toast("Requesting Wallet...");
         await requestWallet();
+        toast("Wallet retrieved.");
       }
     }
     getWallet();
@@ -30,7 +33,6 @@ export default function Home() {
 
   useEffect(() => {
     if (injectedChain?.chainId) {
-      console.log(injectedChain.chainId);
       if (injectedChain.chainId === "0xa869") {
         setChain("Fuji");
       }
@@ -41,54 +43,65 @@ export default function Home() {
   }, [injectedChain]);
 
   async function getRole(chainID) {
-    console.log("Getting Role...");
-    const contract = METLContract(chainID, address, injectedProvider);
-    const adminRole = await contract.methods.DEFAULT_ADMIN_ROLE().call();
-    const hasAdmin = await contract.methods.hasRole(adminRole, address).call();
-    if (hasAdmin === true) {
-      router.push("/admin");
+    toast("Getting Role...");
+    try {
+      const contract = METLContract(chainID, address, injectedProvider);
+      const adminRole = await contract.methods.DEFAULT_ADMIN_ROLE().call();
+      const hasAdmin = await contract.methods
+        .hasRole(adminRole, address)
+        .call();
+      if (hasAdmin === true) {
+        toast.success("Admin role detected, logging in...");
+        router.push("/admin");
+        return null;
+      }
+      const BurnerRole = await contract.methods.BURNER_ROLE().call();
+      const HasBurner = await contract.methods
+        .hasRole(BurnerRole, address)
+        .call();
+      if (HasBurner === true) {
+        toast.success("Burner role detected, logging in...");
+        router.push("/burner/burn-tokens");
+        return null;
+      }
+      const FreezerRole = await contract.methods.FREEZER_ROLE().call();
+      const HasFreezer = await contract.methods
+        .hasRole(FreezerRole, address)
+        .call();
+      if (HasFreezer === true) {
+        toast.success("Freezer role detected, logging in...");
+        router.push("/freezer/freeze-tokens");
+        return null;
+      }
+      const MinterRole = await contract.methods.MINTER_ROLE().call();
+      const HasMinter = await contract.methods
+        .hasRole(MinterRole, address)
+        .call();
+      if (HasMinter === true) {
+        toast.success("Minter role detected, logging in...");
+        router.push("/minter/mint-tokens");
+        return null;
+      }
+      const PauserRole = await contract.methods.PAUSER_ROLE().call();
+      const HasPauser = await contract.methods
+        .hasRole(PauserRole, address)
+        .call();
+      if (HasPauser === true) {
+        toast.success("Pauser role detected, logging in...");
+        router.push("/pauser/pause-transactions");
+        return null;
+      }
+      toast.error("User has no role... Rerouting");
+      router.push("/no-role");
       return null;
+    } catch (error) {
+      toast.error("Error detected.");
+      if (error.message.substring(0, 15) === "Returned values") {
+        setTimeout(() => {
+          toast.error("Contract creation failed. Check network.");
+        }, 1000);
+      }
     }
-    console.log("Not Admin...");
-    const BurnerRole = await contract.methods.BURNER_ROLE().call();
-    const HasBurner = await contract.methods
-      .hasRole(BurnerRole, address)
-      .call();
-    if (HasBurner === true) {
-      router.push("/burner/burn-tokens");
-      return null;
-    }
-    console.log("Not Burner...");
-    const FreezerRole = await contract.methods.FREEZER_ROLE().call();
-    const HasFreezer = await contract.methods
-      .hasRole(FreezerRole, address)
-      .call();
-    if (HasFreezer === true) {
-      router.push("/freezer/freeze-tokens");
-      return null;
-    }
-    console.log("Not Freezer...");
-    const MinterRole = await contract.methods.MINTER_ROLE().call();
-    const HasMinter = await contract.methods
-      .hasRole(MinterRole, address)
-      .call();
-    if (HasMinter === true) {
-      router.push("/minter/mint-tokens");
-      return null;
-    }
-    console.log("Not Minter...");
-    const PauserRole = await contract.methods.PAUSER_ROLE().call();
-    const HasPauser = await contract.methods
-      .hasRole(PauserRole, address)
-      .call();
-    if (HasPauser === true) {
-      router.push("/pauser/pause-transactions");
-      return null;
-    }
-    console.log("Not Pauser...");
-    console.log("User has no role... Rerouting");
-    router.push("/no-role");
-    return null;
   }
 
   return (
