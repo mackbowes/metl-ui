@@ -26,7 +26,7 @@ export default function MintTokenForm(props) {
       return null;
     }
     if (mintTarget === "") {
-      toast.error("No Pauser address selected, transaction aborting");
+      toast.error("No bank address selected, transaction aborting");
       return null;
     }
     if (!Web3.utils.isAddress(mintTarget)) {
@@ -81,8 +81,6 @@ export default function MintTokenForm(props) {
           onClick={async () => await bankMint()}
         />
         {showBlockScanner && <BlockScanner txHash={blockScannerContent} />}
-        {/* <Box sx={{ minHeight: `1rem` }}></Box>
-        {statusMessage.length > 0 && <Text>{statusMessage}</Text>} */}
       </Box>
     </Box>
   );

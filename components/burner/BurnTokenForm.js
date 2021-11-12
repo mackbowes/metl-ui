@@ -1,22 +1,43 @@
 import { useState } from "react";
 import SingleActionButton from "../SingleActionControl/SingleActionButton";
 import SingleActionNumberInput from "../SingleActionControl/SingleActionNumberInput";
+import SingleActionAddressInput from "../SingleActionControl/SingleActionAddressInput";
 import { Box, Heading, Text } from "@chakra-ui/react";
 import { useInjectedProvider } from "../../contexts/InjectedProviderContext";
 import { METLContract } from "../../utils/contract";
+import toastHandler from "../../utils/toastHandling";
+import BlockScanner from "../BlockScanner";
+import toast from "react-hot-toast";
+import Web3 from "web3";
 
 export default function BurnTokenForm(props) {
-  const [burnAmount, setBurnAmount] = useState();
-  const [statusMessage, setStatusMessage] = useState("");
+  const [burnAmount, setBurnAmount] = useState("");
+  const [burnTarget, setBurnTarget] = useState("");
+  const [showBlockScanner, setShowBlockScanner] = useState(false);
+  const [blockScannerContent, setBlockScannerContent] = useState("");
 
   const { address, injectedChain, injectedProvider } = useInjectedProvider();
 
-  async function poolBurn() {
+  async function bankBurn() {
     if (!injectedChain) {
-      setStatusMessage(
+      toast.error(
         "Function not ready. Wait or reconnect wallet. Contact Developers if issue persists."
       );
-      setTimeout(() => setStatusMessage(""), 3000);
+      return null;
+    }
+    const amount = BigInt(burnAmount * 10 ** 18);
+    if (amount <= 0) {
+      toast.error("No amount entered.");
+      return null;
+    }
+    if (burnTarget.length <= 0) {
+      toast.error("No bank selected");
+      return null;
+    }
+    if (!Web3.utils.isAddress(burnTarget)) {
+      toast.error(
+        "Address incorrectly formatted. Check your input before resubmitting."
+      );
       return null;
     }
     const contract = METLContract(
@@ -24,32 +45,10 @@ export default function BurnTokenForm(props) {
       address,
       injectedProvider
     );
-    console.log(contract.methods);
-    const amount = BigInt(burnAmount * 10 ** 18);
-    const transaction = await contract.methods.poolBurn(amount);
-    const txResponse = await transaction
-      .send("eth_requestAccounts")
-      .on("transactionHash", (txHash) => {
-        console.log(txHash);
-        setStatusMessage("Transaction Hash received. Adding In Progress...");
-        setTimeout(() => setStatusMessage(""), 3000);
-        return txHash;
-      })
-      .once("confirmation", (confNumber, receipt, latestBlockHash) => {
-        console.log(receipt);
-        setStatusMessage("Transaction confirmed.");
-        setTimeout(() => setStatusMessage(""), 3000);
-      })
-      .on("error", (error) => {
-        console.error(error);
-        setStatusMessage(
-          "Error received. Adding Aborted. Check console logs for details."
-        );
-        setTimeout(() => setStatusMessage(""), 3000);
-        return error;
-      });
-    console.log(txResponse);
+    const transaction = await contract.methods.poolBurn(burnTarget, amount);
+    toastHandler(transaction, setBlockScannerContent, setShowBlockScanner);
   }
+
   return (
     <Box sx={{ width: `clamp(288px, 20vw, 576px)` }}>
       <Heading
@@ -71,17 +70,28 @@ export default function BurnTokenForm(props) {
           padding: `1ex 1em`,
         }}
       >
+        <SingleActionAddressInput
+          label="Address"
+          val={burnTarget}
+          setVal={setBurnTarget}
+        />
         <SingleActionNumberInput
           label="Amount"
           val={burnAmount}
           setVal={setBurnAmount}
         />
+
         <SingleActionButton
           label={"Burn"}
-          onClick={async () => await poolBurn()}
+          onClick={async () => await bankBurn()}
         />
-        <Box sx={{ minHeight: `1rem` }}></Box>
-        {statusMessage.length > 0 && <Text>{statusMessage}</Text>}
+
+        {showBlockScanner && (
+          <>
+            <Box sx={{ minHeight: `1rem` }}></Box>
+            <BlockScanner txHash={blockScannerContent} />
+          </>
+        )}
       </Box>
     </Box>
   );
