@@ -16,6 +16,7 @@ export default async function toastHandler(
     .once("confirmation", () => {
       toast.success("Transaction Succeeded.");
       setTimeout(() => setShowBlockScanner(false), 10000);
+      return "confirmed";
     })
     .once("error", (error) => {
       console.error(error);
@@ -24,5 +25,6 @@ export default async function toastHandler(
         toast.error(error?.message);
       }
       setTimeout(() => setShowBlockScanner(false), 10000);
+      return "errored";
     });
 }

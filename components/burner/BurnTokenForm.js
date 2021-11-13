@@ -46,7 +46,14 @@ export default function BurnTokenForm(props) {
       injectedProvider
     );
     const transaction = await contract.methods.bankBurn(burnTarget, amount);
-    toastHandler(transaction, setBlockScannerContent, setShowBlockScanner);
+    const response = await toastHandler(
+      transaction,
+      setBlockScannerContent,
+      setShowBlockScanner
+    );
+    if (response === "confirmed") {
+      // store burn target, amount, and timestamp
+    }
   }
 
   return (

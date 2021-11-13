@@ -97,55 +97,67 @@ export default function Home() {
                 <Text>
                   Log In To The Multisig You Want To Transfer Tokens From
                 </Text>
-                <Box
-                  sx={{
-                    padding: `1rem`,
-                    margin: `1rem auto`,
-                    border: `1px solid black`,
-                    textAlign: `center`,
-                    transition: `all 0.25s`,
-                  }}
-                  _hover={{
-                    cursor: `pointer`,
-                    backgroundColor: `black`,
-                    color: `white`,
-                  }}
-                >
-                  {/* This app is Avalanche native by default */}
-                  {isFuji && (
-                    <a
-                      href="https://multisig.pangolin.exchange/"
-                      target="_blank"
+                {/* This app is Avalanche native by default */}
+                {isFuji && (
+                  <a href="https://multisig.pangolin.exchange/" target="_blank">
+                    <Box
+                      sx={{
+                        padding: `1rem`,
+                        margin: `1rem auto`,
+                        border: `1px solid black`,
+                        textAlign: `center`,
+                        transition: `all 0.25s`,
+                      }}
+                      _hover={{
+                        cursor: `pointer`,
+                        backgroundColor: `black`,
+                        color: `white`,
+                      }}
                     >
                       Open Pangolin
-                    </a>
-                  )}
-                  {isAvax && (
-                    <a
-                      href="https://multisig.pangolin.exchange/"
-                      target="_blank"
+                    </Box>
+                  </a>
+                )}
+                {isAvax && (
+                  <a href="https://multisig.pangolin.exchange/" target="_blank">
+                    <Box
+                      sx={{
+                        padding: `1rem`,
+                        margin: `1rem auto`,
+                        border: `1px solid black`,
+                        textAlign: `center`,
+                        transition: `all 0.25s`,
+                      }}
+                      _hover={{
+                        cursor: `pointer`,
+                        backgroundColor: `black`,
+                        color: `white`,
+                      }}
                     >
                       Open Pangolin
-                    </a>
-                  )}
-                  {!isFuji && !isAvax && (
-                    <a href="https://gnosis-safe.io/" target="_blank">
+                    </Box>
+                  </a>
+                )}
+                {!isFuji && !isAvax && (
+                  <a href="https://gnosis-safe.io/" target="_blank">
+                    <Box
+                      sx={{
+                        padding: `1rem`,
+                        margin: `1rem auto`,
+                        border: `1px solid black`,
+                        textAlign: `center`,
+                        transition: `all 0.25s`,
+                      }}
+                      _hover={{
+                        cursor: `pointer`,
+                        backgroundColor: `black`,
+                        color: `white`,
+                      }}
+                    >
                       Open Gnosis
-                    </a>
-                  )}
-                  {/* {injectedChain.chain === "AVAX" ? (
-                    <a
-                      href="https://multisig.pangolin.exchange/"
-                      target="_blank"
-                    >
-                      Open Pangolin
-                    </a>
-                  ) : (
-                    <a href="https://gnosis-safe.io/" target="_blank">
-                      Open Gnosis
-                    </a>
-                  )} */}
-                </Box>
+                    </Box>
+                  </a>
+                )}
               </SingleActionControlLayout>
             </ControlPanel>
           </Box>
