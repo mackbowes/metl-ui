@@ -19,7 +19,10 @@ export default async function toastHandler(
     })
     .once("error", (error) => {
       console.error(error);
-      toast.error("Error received: ", error?.message);
+      toast.error("Error received.");
+      if (error?.message) {
+        toast.error(error?.message);
+      }
       setTimeout(() => setShowBlockScanner(false), 10000);
     });
 }

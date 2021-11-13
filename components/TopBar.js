@@ -1,6 +1,14 @@
+import { useEffect } from "react";
 import { Box, Heading } from "@chakra-ui/react";
+import { useInjectedProvider } from "../contexts/InjectedProviderContext";
 
 export default function TopBar(props) {
+  const { address, injectedChain, injectedProvider } = useInjectedProvider();
+
+  useEffect(() => {
+    console.log(injectedChain);
+  });
+
   return (
     <Box
       sx={{
@@ -19,6 +27,7 @@ export default function TopBar(props) {
         style={{ maxHeight: `1.5rem` }}
       />
       <Heading as="h4" sx={{ textTransform: `uppercase`, fontSize: `1.5rem` }}>
+        {injectedChain && `${injectedChain.short_name} | `}
         {props.label}
       </Heading>
     </Box>

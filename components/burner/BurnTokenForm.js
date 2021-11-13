@@ -45,7 +45,7 @@ export default function BurnTokenForm(props) {
       address,
       injectedProvider
     );
-    const transaction = await contract.methods.poolBurn(burnTarget, amount);
+    const transaction = await contract.methods.bankBurn(burnTarget, amount);
     toastHandler(transaction, setBlockScannerContent, setShowBlockScanner);
   }
 
